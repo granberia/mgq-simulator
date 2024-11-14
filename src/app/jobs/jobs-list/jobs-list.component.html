@@ -1,0 +1,26 @@
+<clr-datagrid>
+  <clr-dg-column [clrDgSortBy]="jobComparators.nameComparator">직업명
+    <clr-dg-string-filter [clrDgStringFilter]="nameFilter"></clr-dg-string-filter>
+  </clr-dg-column>
+  <clr-dg-column [clrDgSortBy]="jobComparators.hpComparator">HP</clr-dg-column>
+  <clr-dg-column [clrDgSortBy]="jobComparators.mpComparator">MP</clr-dg-column>
+  <clr-dg-column [clrDgSortBy]="jobComparators.spComparator">SP</clr-dg-column>
+  <clr-dg-column [clrDgSortBy]="jobComparators.atkComparator">공격력</clr-dg-column>
+  <clr-dg-column [clrDgSortBy]="jobComparators.defComparator">방어력</clr-dg-column>
+  <clr-dg-column [clrDgSortBy]="jobComparators.matComparator">마력</clr-dg-column>
+  <clr-dg-column [clrDgSortBy]="jobComparators.mdfComparator">정신력</clr-dg-column>
+  <clr-dg-column [clrDgSortBy]="jobComparators.agiComparator">민첩성</clr-dg-column>
+  <clr-dg-column [clrDgSortBy]="jobComparators.lukComparator">손재주</clr-dg-column>
+
+  <clr-dg-row *clrDgItems="let job of jobList">
+    <clr-dg-cell style="cursor: pointer" (click)="viewDetail(job)">{{ job.name }}</clr-dg-cell>
+    <ng-container *ngFor="let item of columns">
+      <clr-dg-cell style="cursor: pointer" (click)="viewDetail(job)">{{ job[item] }}%</clr-dg-cell>
+    </ng-container>
+  </clr-dg-row>
+
+  <clr-dg-footer>
+    {{pagination.totalItems}}개 직업 중 {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}번째
+    <clr-dg-pagination #pagination [clrDgPageSize]="20"></clr-dg-pagination>
+  </clr-dg-footer>
+</clr-datagrid>

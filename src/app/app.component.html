@@ -1,0 +1,44 @@
+<clr-main-container>
+  <clr-header>
+    <div class="branding">
+      <a routerLink="" class="nav-link">
+        <img src="assets/icons/granberia.png" style="margin-right: 12px">
+        <span class="title">몬무스 퀘스트 패러독스 시뮬레이터</span>
+      </a>
+    </div>
+    <div class="header-nav">
+      <!-- <a class="nav-link" href="#" [routerLink]="['/main']" routerLinkActive="active">
+        <span class="nav-text">메인</span>
+      </a> -->
+      <a class="nav-link" href="#" [routerLink]="['/actors']" routerLinkActive="active">
+        <span class="nav-text">동료 정보</span>
+      </a>
+      <a class="nav-link" href="#" [routerLink]="['/jobs']" routerLinkActive="active">
+        <span class="nav-text">직업 정보</span>
+      </a>
+      <a class="nav-link" href="#" [routerLink]="['/races']" routerLinkActive="active">
+        <span class="nav-text">종족 정보</span>
+      </a>
+      <!-- <a class="nav-link" href="#" [routerLink]="['/weapons']" routerLinkActive="active">
+        <span class="nav-text">무기 정보</span>
+      </a>
+      <a class="nav-link" href="#" [routerLink]="['/armors']" routerLinkActive="active">
+        <span class="nav-text">방어구 정보</span>
+      </a>
+      <a class="nav-link" href="#" [routerLink]="['/accessories']" routerLinkActive="active">
+        <span class="nav-text">장신구 정보</span>
+      </a> -->
+      <a class="nav-link" href="#" [routerLink]="['/skills']" routerLinkActive="active">
+        <span class="nav-text">스킬 정보</span>
+      </a>
+      <a class="nav-link" href="#" [routerLink]="['/abilities']" routerLinkActive="active">
+        <span class="nav-text">어빌리티 정보</span>
+      </a>
+    </div>
+  </clr-header>
+  <div class="content-container">
+    <div class="content-area">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</clr-main-container>

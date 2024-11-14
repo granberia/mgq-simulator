@@ -1,0 +1,1709 @@
+
+#===============================================================================
+# ● Extract Actor in VXACE
+#===============================================================================
+def extract_actor_ace(file)
+  extract = 'ability'
+  datas = get_skill
+  temp = ''
+  if extract == 'ability'
+    set_data(file, 'import { Ability } from "../types/abilities";') # ability
+    set_data(file, 'export const ABILITY_LIST: Ability[] = [') # ability
+  end
+  if extract == 'skill'
+    set_data(file, 'import { Skill } from "../types/skills";') # skill
+    set_data(file, 'export const SKILL_LIST: Skill[] = [') # skill
+  end
+  for i in 1...6000
+    if (extract == 'skill' && i >= 901 && i <= 3180) ||
+       (extract == 'ability' && i >= 61 && i <= 862) ||
+       (extract == 'ability' && i >= 5621 && i <= 5654)
+      target = datas[i]
+      if target.name != '***더미' &&  target.name != '**더미' &&  target.name != ''
+        set_data(file, '{')
+
+        set_data(file, 'id: \''+ target.id.to_s + '\',', true)
+        set_data(file, 'name: \''+ target.name + '\',', true)
+        set_data(file, 'description: \''+ target.description + '\',', true)
+        set_data(file, 'type: \''+ target.stype_id.to_s + '\',', true)
+        set_data(file, 'icon: '+ target.icon_index.to_s + ',', true)
+
+        if extract == 'skill' # if Skill
+          set_data(file, 'scope: '+ target.scope.to_s + ',', true)
+          set_data(file, 'action: '+ target.damage.type.to_s + ',', true)
+          set_data(file, 'mpCost: '+ target.mp_cost.to_s + ',', true)
+          set_data(file, 'spCost: '+ target.tp_cost.to_s + ',', true)
+          set_data(file, 'hitType: '+ target.hit_type.to_s + ',', true)
+
+          # action이 0이 아니면 canCritical, fomula, elementId가 있다
+          if target.damage.type !=0
+            set_data(file, 'element: '+ target.damage.element_id.to_s + ',', true)
+            set_data(file, 'fomula: \''+ target.damage.formula.to_s + '\',', true)
+            set_data(file, 'canCritical: '+ target.damage.critical.to_s + ',', true)
+          end
+
+          if target.speed != 0
+            set_data(file, 'addSpeed: '+ target.speed.to_s + ',', true)
+          end
+
+          if target.repeats != 1
+            set_data(file, 'repeats: '+ target.repeats.to_s + ',', true)
+          end
+        end
+
+
+        if extract == 'ability' # if Ability
+          ## size
+          target.note.each_line do |line|
+            if /<記憶容量\s?(\d+)>/i.match(line)
+              set_data(file, 'size: '+ $1.to_f.round.to_s + ',', true)
+            end
+          end
+        end
+
+        set_data(file, '},')
+      end
+    end
+
+  end
+  set_data(file, '];')
+end
+
+#===============================================================================
+
+def extract_actor_ace_equip(file)
+  #datas = get_weapon # weapon
+  datas = get_armor # armor, accessory
+  #set_data(file, 'import { Weapon } from "../types/weapons";')
+  #set_data(file, 'export const WEAPON_LIST: Weapon[] = [')
+  #set_data(file, 'import { Armor } from "../types/armors";')
+  #set_data(file, 'export const ARMOR_LIST: Armor[] = [')
+  set_data(file, 'import { Accessory } from "../types/accessories";')
+  set_data(file, 'export const ACCESSORY_LIST: Accessory[] = [')
+  #for i in 1...1000 # weapon
+  #for i in 1...349 # armor
+  for i in 1001...1741 # accessory
+    target = datas[i]
+
+    if target.name[0] != '/' && target.name != '***더미' &&  target.name != '**더미' &&  target.name != ''
+      set_data(file, '{')
+
+      set_data(file, 'id: \''+ target.id.to_s + '\',', true)
+      set_data(file, 'name: \''+ target.name + '\',', true)
+      set_data(file, 'description: \''+ target.description + '\',', true)
+      # set_data(file, 'type: \''+ target.wtype_id.to_s + '\',', true) #weapon
+      set_data(file, 'type: \''+ target.atype_id.to_s + '\',', true) #armor, accessory
+      set_data(file, 'icon: '+ target.icon_index.to_s + ',', true)
+      set_data(file, 'price: '+ target.price.to_s + ',', true)
+
+      ## addSkill
+      temp = 'addSkill: ['
+      cnt = 0
+      for j in 0...target.features.size
+        if target.features[j].code == 41
+          if cnt != 0
+            temp = temp + ', '
+          end
+          temp = temp + '\'' + target.features[j].data_id.to_s + '\''
+          cnt = cnt + 1
+        end
+      end
+      temp = temp + '],'
+      set_data(file, temp, true)
+
+      ## addWeapon
+      temp = 'addWeapon: ['
+      cnt = 0
+      for j in 0...target.features.size
+        if target.features[j].code == 51
+          if cnt != 0
+            temp = temp + ', '
+          end
+          temp = temp + '\'' + target.features[j].data_id.to_s + '\''
+          cnt = cnt + 1
+        end
+      end
+      temp = temp + '],'
+      set_data(file, temp, true)
+
+      ## addArmor
+      temp = 'addArmor: ['
+      cnt = 0
+      for j in 0...target.features.size
+        if target.features[j].code == 52
+          if cnt != 0
+            temp = temp + ', '
+          end
+          temp = temp + '\'' + target.features[j].data_id.to_s + '\''
+          cnt = cnt + 1
+        end
+      end
+      temp = temp + '],'
+      set_data(file, temp, true)
+
+      ## HP
+      for j in 0...target.features.size
+        if target.features[j].code == 21
+          if target.features[j].data_id == 0
+            set_data(file, 'hp: '+ (target.features[j].value * 100).round.to_s + ',', true)
+          end
+        end
+      end
+
+      ## MP
+      for j in 0...target.features.size
+        if target.features[j].code == 21
+          if target.features[j].data_id == 1
+            set_data(file, 'mp: '+ (target.features[j].value * 100).round.to_s + ',', true)
+          end
+        end
+      end
+
+      ## ATK DEF MAT MDF AGI LUK
+      for j in 0...target.features.size
+        if target.features[j].code == 21
+          if target.features[j].data_id == 2
+            set_data(file, 'atk: '+ (target.features[j].value * 100).round.to_s + ',', true)
+          end
+          if target.features[j].data_id == 3
+            set_data(file, 'def: '+ (target.features[j].value * 100).round.to_s + ',', true)
+          end
+          if target.features[j].data_id == 4
+            set_data(file, 'mat: '+ (target.features[j].value * 100).round.to_s + ',', true)
+          end
+          if target.features[j].data_id == 5
+            set_data(file, 'mdf: '+ (target.features[j].value * 100).round.to_s + ',', true)
+          end
+          if target.features[j].data_id == 6
+            set_data(file, 'agi: '+ (target.features[j].value * 100).round.to_s + ',', true)
+          end
+          if target.features[j].data_id == 7
+            set_data(file, 'luk: '+ (target.features[j].value * 100).round.to_s + ',', true)
+          end
+        end
+      end
+
+      set_data(file, 'hpAdd: '+ target.params[0].to_s + ',', true)
+      set_data(file, 'mpAdd: '+ target.params[1].to_s + ',', true)
+      set_data(file, 'atkAdd: '+ target.params[2].to_s + ',', true)
+      set_data(file, 'defAdd: '+ target.params[3].to_s + ',', true)
+      set_data(file, 'matAdd: '+ target.params[4].to_s + ',', true)
+      set_data(file, 'mdfAdd: '+ target.params[5].to_s + ',', true)
+      set_data(file, 'agiAdd: '+ target.params[6].to_s + ',', true)
+      set_data(file, 'lukAdd: '+ target.params[7].to_s + ',', true)
+
+
+      ## accuracy critical evasion magicEvasion counter magicCounter
+      ## hpRegen mpRegen spRegen reflect magicReflect
+      for j in 0...target.features.size
+        if target.features[j].code == 22
+          if target.features[j].data_id == 0
+            set_data(file, 'accuracy: '+ (target.features[j].value * 100).round.to_s + ',', true)
+          end
+          if target.features[j].data_id == 1
+            set_data(file, 'evasion: '+ (target.features[j].value * 100).round.to_s + ',', true)
+          end
+          if target.features[j].data_id == 2
+            set_data(file, 'critical: '+ (target.features[j].value * 100).round.to_s + ',', true)
+          end
+          if target.features[j].data_id == 4
+            set_data(file, 'magicEvasion: '+ (target.features[j].value * 100).round.to_s + ',', true)
+          end
+          if target.features[j].data_id == 5
+            set_data(file, 'magicReflect: '+ (target.features[j].value * 100).round.to_s + ',', true)
+          end
+          if target.features[j].data_id == 6
+            set_data(file, 'counter: '+ (target.features[j].value * 100).round.to_s + ',', true)
+          end
+          if target.features[j].data_id == 7
+            set_data(file, 'hpRegen: '+ (target.features[j].value * 100).round.to_s + ',', true)
+          end
+          if target.features[j].data_id == 8
+            set_data(file, 'mpRegen: '+ (target.features[j].value * 100).round.to_s + ',', true)
+          end
+          if target.features[j].data_id == 9
+            set_data(file, 'spRegen: '+ (target.features[j].value * 100).round.to_s + ',', true)
+          end
+        end
+      end
+
+      ## 나머지
+      for j in 0...target.features.size
+        if target.features[j].code == 23
+          if target.features[j].data_id == 0
+            set_data(file, 'aggroRate: '+ (target.features[j].value * 100).round.to_s + ',', true)
+          end
+          if target.features[j].data_id == 1
+            set_data(file, 'defenceRate: '+ (target.features[j].value * 100).round.to_s + ',', true)
+          end
+          if target.features[j].data_id == 2
+            set_data(file, 'healRate: '+ (target.features[j].value * 100).round.to_s + ',', true)
+          end
+          if target.features[j].data_id == 3
+            set_data(file, 'itemUseRate: '+ (target.features[j].value * 100).round.to_s + ',', true)
+          end
+          if target.features[j].data_id == 4
+            set_data(file, 'mpCost: '+ (target.features[j].value * 100).round.to_s + ',', true)
+          end
+          if target.features[j].data_id == 5
+            set_data(file, 'spCharge: '+ (target.features[j].value * 100).round.to_s + ',', true)
+          end
+          if target.features[j].data_id == 6
+            set_data(file, 'physicalDamage: '+ (target.features[j].value * 100).round.to_s + ',', true)
+          end
+          if target.features[j].data_id == 7
+            set_data(file, 'magicDamage: '+ (target.features[j].value * 100).round.to_s + ',', true)
+          end
+          if target.features[j].data_id == 8
+            set_data(file, 'floorDamage: '+ (target.features[j].value * 100).round.to_s + ',', true)
+          end
+          if target.features[j].data_id == 9
+            set_data(file, 'expRate: '+ (target.features[j].value * 100).round.to_s + ',', true)
+          end
+        end
+      end
+
+      ## 특수 플래그
+      for j in 0...target.features.size
+        if target.features[j].code == 34
+          set_data(file, 'moreAction: '+ target.features[j].value.to_i.to_s + ',', true)
+        end
+        if target.features[j].code == 55
+            set_data(file, 'dualWield: true,', true)
+        end
+        if target.features[j].code == 61
+          if target.features[j].data_id == 0
+            set_data(file, 'moreAction: '+ (target.features[j].value * 100).round.to_s + ',', true)
+          end
+        end
+        if target.features[j].code == 62
+          if target.features[j].data_id == 0
+            set_data(file, 'autoBattle: true,', true)
+          end
+        end
+        if target.features[j].code == 64
+          if target.features[j].data_id == 2
+            set_data(file, 'noBackstab: true,', true)
+          end
+        end
+      end
+
+
+
+      ## magicCounter
+      target.note.each_line do |line|
+        if /<魔法反撃\s?(\d+)\%>/i.match(line)
+          set_data(file, 'magicCounter: '+ $1.to_f.round.to_s + ',', true)
+        end
+      end
+
+      ## accuracyAdd
+      target.note.each_line do |line|
+        if /<拡張命中率\s?(\d+)\%>/i.match(line)
+          set_data(file, 'accuracyAdd: '+ $1.to_f.round.to_s + ',', true)
+        end
+      end
+
+
+      ## criticalAdd
+      target.note.each_line do |line|
+        if /<拡張会心率\s?(\d+)\%>/i.match(line)
+          set_data(file, 'criticalAdd: '+ $1.to_f.round.to_s + ',', true)
+        end
+      end
+
+
+      ## evasionAdd
+      target.note.each_line do |line|
+        if /<拡張回避率\s?(\d+)\%>/i.match(line)
+          set_data(file, 'evasionAdd: '+ $1.to_f.round.to_s + ',', true)
+        end
+      end
+
+
+      ## magicEvasionAdd
+      target.note.each_line do |line|
+        if /<拡張魔法回避率\s?(\d+)\%>/i.match(line)
+          set_data(file, 'magicEvasionAdd: '+ $1.to_f.round.to_s + ',', true)
+        end
+      end
+
+
+      ## criticalEvasionAdd
+      target.note.each_line do |line|
+        if /<拡張会心回避率\s?(\d+)\%>/i.match(line)
+          set_data(file, 'criticalEvasionAdd: '+ $1.to_f.round.to_s + ',', true)
+        end
+      end
+
+
+      ## counterAdd
+      target.note.each_line do |line|
+        if /<拡張反撃撃\s?(\d+)\%>/i.match(line)
+          set_data(file, 'counterAdd: '+ $1.to_f.round.to_s + ',', true)
+        end
+      end
+
+
+      ## reflectAdd
+      target.note.each_line do |line|
+        if /<拡張物理反射率\s?(\d+)\%>/i.match(line)
+          set_data(file, 'reflectAdd: '+ $1.to_f.round.to_s + ',', true)
+        end
+      end
+
+
+      ## magicReflectAdd
+      target.note.each_line do |line|
+        if /<拡張魔法反射率\s?(\d+)\%>/i.match(line)
+          set_data(file, 'magicReflectAdd: '+ $1.to_f.round.to_s + ',', true)
+        end
+      end
+
+
+      ## spOnInit
+      target.note.each_line do |line|
+        if /<開始時TP\s?(\d+)\%>/i.match(line)
+          set_data(file, 'spOnInit: '+ $1.to_f.round.to_s + ',', true)
+        end
+      end
+
+
+      ## spCost
+      target.note.each_line do |line|
+        if /<TP消費率\s?(\d+)\%>/i.match(line)
+          set_data(file, 'spCost: '+ $1.to_f.round.to_s + ',', true)
+        end
+      end
+
+
+      ## goldCost
+      target.note.each_line do |line|
+        if /<ゴールド消費率\s?(\d+)\%>/i.match(line)
+          set_data(file, 'goldCost: '+ $1.to_f.round.to_s + ',', true)
+        end
+      end
+
+
+      ## ignoreDamage
+      target.note.each_line do |line|
+        if /<無効化障壁\s?(\d+)>/i.match(line)
+          set_data(file, 'ignoreDamage: '+ $1.to_s + ',', true)
+        end
+      end
+
+
+      ## endure
+      target.note.each_line do |line|
+        if /<踏みとどまり\s?(\d+)\%>/i.match(line)
+          set_data(file, 'endure: '+ $1.to_f.round.to_s + ',', true)
+        end
+      end
+
+
+      ## absorbMP
+      target.note.each_line do |line|
+        if /<ダメージMP吸収\s?(\d+)\%>/i.match(line)
+          set_data(file, 'absorbMP: '+ $1.to_f.round.to_s + ',', true)
+        end
+      end
+
+
+      ## damageToGold
+      target.note.each_line do |line|
+        if /<ダメージゴールド回収\s?(\d+)\%>/i.match(line)
+          set_data(file, 'damageToGold: '+ $1.to_f.round.to_s + ',', true)
+        end
+      end
+
+
+      ## reverseHeal
+      target.note.each_line do |line|
+        if /<回復反転\s?(\d+)\%>/i.match(line)
+          set_data(file, 'reverseHeal: '+ $1.to_f.round.to_s + ',', true)
+        end
+      end
+
+
+      ## hpRegenOnVictory
+      target.note.each_line do |line|
+        if /<戦闘後HP回復\s?(\d+)\%>/i.match(line)
+          set_data(file, 'hpRegenOnVictory: '+ $1.to_f.round.to_s + ',', true)
+        end
+      end
+
+
+      ## mpRegenOnVictory
+      target.note.each_line do |line|
+        if /<戦闘後MP回復\s?(\d+)\%>/i.match(line)
+          set_data(file, 'mpRegenOnVictory: '+ $1.to_f.round.to_s + ',', true)
+        end
+      end
+
+
+      ## expRate
+      target.note.each_line do |line|
+        if /<獲得経験値倍率\s?(\d+)\%>/i.match(line)
+          set_data(file, 'expRate: '+ $1.to_f.round.to_s + ',', true)
+        end
+      end
+
+
+      ## jobExpRate
+      target.note.each_line do |line|
+        if /<獲得職業経験値倍率\s?(\d+)\%>/i.match(line)
+          set_data(file, 'jobExpRate: '+ $1.to_f.round.to_s + ',', true)
+        end
+      end
+
+
+      ## elementResist
+      set_data(file, 'elementResist: {')
+      for j in 0...target.features.size
+        if target.features[j].code == 11
+          if target.features[j].value != 1.0
+            if target.features[j].data_id == 1
+              set_data(file, 'physical: '+ (target.features[j].value * 100).round.to_s + ',', true)
+            end
+            if target.features[j].data_id == 2
+              set_data(file, 'pleasure: '+ (target.features[j].value * 100).round.to_s + ',', true)
+            end
+            if target.features[j].data_id == 3
+              set_data(file, 'fire: '+ (target.features[j].value * 100).round.to_s + ',', true)
+            end
+            if target.features[j].data_id == 4
+              set_data(file, 'ice: '+ (target.features[j].value * 100).round.to_s + ',', true)
+            end
+            if target.features[j].data_id == 5
+              set_data(file, 'lightning: '+ (target.features[j].value * 100).round.to_s + ',', true)
+            end
+            if target.features[j].data_id == 6
+              set_data(file, 'wind: '+ (target.features[j].value * 100).round.to_s + ',', true)
+            end
+            if target.features[j].data_id == 7
+              set_data(file, 'earth: '+ (target.features[j].value * 100).round.to_s + ',', true)
+            end
+            if target.features[j].data_id == 8
+              set_data(file, 'water: '+ (target.features[j].value * 100).round.to_s + ',', true)
+            end
+            if target.features[j].data_id == 9
+              set_data(file, 'holy: '+ (target.features[j].value * 100).round.to_s + ',', true)
+            end
+            if target.features[j].data_id == 10
+              set_data(file, 'dark: '+ (target.features[j].value * 100).round.to_s + ',', true)
+            end
+            if target.features[j].data_id == 36
+              set_data(file, 'bio: '+ (target.features[j].value * 100).round.to_s + ',', true)
+            end
+            if target.features[j].data_id == 35
+              set_data(file, 'sonic: '+ (target.features[j].value * 100).round.to_s + ',', true)
+            end
+            if target.features[j].data_id == 39
+              set_data(file, 'special: '+ (target.features[j].value * 100).round.to_s + ',', true)
+            end
+          end
+        end
+      end
+      set_data(file, '},')
+
+
+      ## elementAdd
+      set_data(file, 'elementAdd: {')
+      for j in 0...target.features.size
+        if target.features[j].code == 31
+          if target.features[j].data_id == 1
+            set_data(file, 'physical: true,', true)
+          end
+          if target.features[j].data_id == 2
+            set_data(file, 'pleasure: true,', true)
+          end
+          if target.features[j].data_id == 3
+            set_data(file, 'fire: true,', true)
+          end
+          if target.features[j].data_id == 4
+            set_data(file, 'ice: true,', true)
+          end
+          if target.features[j].data_id == 5
+            set_data(file, 'lightning: true,', true)
+          end
+          if target.features[j].data_id == 6
+            set_data(file, 'wind: true,', true)
+          end
+          if target.features[j].data_id == 7
+            set_data(file, 'earth: true,', true)
+          end
+          if target.features[j].data_id == 8
+            set_data(file, 'water: true,', true)
+          end
+          if target.features[j].data_id == 9
+            set_data(file, 'holy: true,', true)
+          end
+          if target.features[j].data_id == 10
+            set_data(file, 'dark: true,', true)
+          end
+          if target.features[j].data_id == 36
+            set_data(file, 'bio: true,', true)
+          end
+          if target.features[j].data_id == 35
+            set_data(file, 'sonic: true,', true)
+          end
+          if target.features[j].data_id == 39
+            set_data(file, 'special: true,', true)
+          end
+        end
+      end
+      set_data(file, '},')
+
+
+      ## elementPower
+      set_data(file, 'elementPower: {')
+      target.note.each_line do |line|
+        if /<属性強化\s?((?:\d+\-\d+(?:\,\s?)?)+)>/i.match(line)
+          $1.scan(/(\d+)\-(\d+)/){|a, b|
+            if a.to_i == 1
+              set_data(file, 'physical: '+ b.to_s + ',', true)
+            end
+            if a.to_i == 2
+              set_data(file, 'pleasure: '+ b.to_s + ',', true)
+            end
+            if a.to_i == 3
+              set_data(file, 'fire: '+ b.to_s + ',', true)
+            end
+            if a.to_i == 4
+              set_data(file, 'ice: '+ b.to_s + ',', true)
+            end
+            if a.to_i == 5
+              set_data(file, 'lightning: '+ b.to_s + ',', true)
+            end
+            if a.to_i == 6
+              set_data(file, 'wind: '+ b.to_s + ',', true)
+            end
+            if a.to_i == 7
+              set_data(file, 'earth: '+ b.to_s + ',', true)
+            end
+            if a.to_i == 8
+              set_data(file, 'water: '+ b.to_s + ',', true)
+            end
+            if a.to_i == 9
+              set_data(file, 'holy: '+ b.to_s + ',', true)
+            end
+            if a.to_i == 10
+              set_data(file, 'dark: '+ b.to_s + ',', true)
+            end
+            if a.to_i == 36
+              set_data(file, 'bio: '+ b.to_s + ',', true)
+            end
+            if a.to_i == 35
+              set_data(file, 'sonic: '+ b.to_s + ',', true)
+            end
+            if a.to_i == 39
+              set_data(file, 'special: '+ b.to_s + ',', true)
+            end
+          }
+        end
+      end
+      set_data(file, '},')
+
+
+      ## stateResist
+      set_data(file, 'stateResist: {')
+      for j in 0...target.features.size
+        if target.features[j].code == 13
+          if target.features[j].value != 1.0
+            if target.features[j].data_id == 230
+              set_data(file, 'death: '+ (target.features[j].value * 100).round.to_s + ',', true)
+            end
+            if target.features[j].data_id == 231
+              set_data(file, 'ascension: '+ (target.features[j].value * 100).round.to_s + ',', true)
+            end
+            if target.features[j].data_id == 232
+              set_data(file, 'climax: '+ (target.features[j].value * 100).round.to_s + ',', true)
+            end
+            if target.features[j].data_id == 28
+              set_data(file, 'bind: '+ (target.features[j].value * 100).round.to_s + ',', true)
+            end
+            if target.features[j].data_id == 7
+              set_data(file, 'poison: '+ (target.features[j].value * 100).round.to_s + ',', true)
+            end
+            if target.features[j].data_id == 8
+              set_data(file, 'blind: '+ (target.features[j].value * 100).round.to_s + ',', true)
+            end
+            if target.features[j].data_id == 9
+              set_data(file, 'silence: '+ (target.features[j].value * 100).round.to_s + ',', true)
+            end
+            if target.features[j].data_id == 10
+              set_data(file, 'confusion: '+ (target.features[j].value * 100).round.to_s + ',', true)
+            end
+            if target.features[j].data_id == 11
+              set_data(file, 'sleep: '+ (target.features[j].value * 100).round.to_s + ',', true)
+            end
+            if target.features[j].data_id == 12
+              set_data(file, 'paralysis: '+ (target.features[j].value * 100).round.to_s + ',', true)
+            end
+            if target.features[j].data_id == 13
+              set_data(file, 'burn: '+ (target.features[j].value * 100).round.to_s + ',', true)
+            end
+            if target.features[j].data_id == 14
+              set_data(file, 'freeze: '+ (target.features[j].value * 100).round.to_s + ',', true)
+            end
+            if target.features[j].data_id == 15
+              set_data(file, 'shock: '+ (target.features[j].value * 100).round.to_s + ',', true)
+            end
+            if target.features[j].data_id == 16
+              set_data(file, 'slow: '+ (target.features[j].value * 100).round.to_s + ',', true)
+            end
+            if target.features[j].data_id == 17
+              set_data(file, 'stop: '+ (target.features[j].value * 100).round.to_s + ',', true)
+            end
+            if target.features[j].data_id == 18
+              set_data(file, 'mini: '+ (target.features[j].value * 100).round.to_s + ',', true)
+            end
+            if target.features[j].data_id == 19
+              set_data(file, 'zombie: '+ (target.features[j].value * 100).round.to_s + ',', true)
+            end
+            if target.features[j].data_id == 20
+              set_data(file, 'petrify: '+ (target.features[j].value * 100).round.to_s + ',', true)
+            end
+            if target.features[j].data_id == 21
+              set_data(file, 'digest: '+ (target.features[j].value * 100).round.to_s + ',', true)
+            end
+            if target.features[j].data_id == 22
+              set_data(file, 'stun: '+ (target.features[j].value * 100).round.to_s + ',', true)
+            end
+            if target.features[j].data_id == 23
+              set_data(file, 'slime: '+ (target.features[j].value * 100).round.to_s + ',', true)
+            end
+            if target.features[j].data_id == 24
+              set_data(file, 'horny: '+ (target.features[j].value * 100).round.to_s + ',', true)
+            end
+            if target.features[j].data_id == 25
+              set_data(file, 'trance: '+ (target.features[j].value * 100).round.to_s + ',', true)
+            end
+            if target.features[j].data_id == 26
+              set_data(file, 'seduction: '+ (target.features[j].value * 100).round.to_s + ',', true)
+            end
+            if target.features[j].data_id == 27
+              set_data(file, 'incontinence: '+ (target.features[j].value * 100).round.to_s + ',', true)
+            end
+          end
+        end
+      end
+      set_data(file, '},')
+
+
+      ## stateOnHit
+      set_data(file, 'stateOnHit: {')
+      for j in 0...target.features.size
+        if target.features[j].code == 32
+          if target.features[j].data_id == 230
+            set_data(file, 'death: '+ (target.features[j].value * 100).round.to_s + ',', true)
+          end
+          if target.features[j].data_id == 231
+            set_data(file, 'ascension: '+ (target.features[j].value * 100).round.to_s + ',', true)
+          end
+          if target.features[j].data_id == 232
+            set_data(file, 'climax: '+ (target.features[j].value * 100).round.to_s + ',', true)
+          end
+          if target.features[j].data_id == 28
+            set_data(file, 'bind: '+ (target.features[j].value * 100).round.to_s + ',', true)
+          end
+          if target.features[j].data_id == 7
+            set_data(file, 'poison: '+ (target.features[j].value * 100).round.to_s + ',', true)
+          end
+          if target.features[j].data_id == 8
+            set_data(file, 'blind: '+ (target.features[j].value * 100).round.to_s + ',', true)
+          end
+          if target.features[j].data_id == 9
+            set_data(file, 'silence: '+ (target.features[j].value * 100).round.to_s + ',', true)
+          end
+          if target.features[j].data_id == 10
+            set_data(file, 'confusion: '+ (target.features[j].value * 100).round.to_s + ',', true)
+          end
+          if target.features[j].data_id == 11
+            set_data(file, 'sleep: '+ (target.features[j].value * 100).round.to_s + ',', true)
+          end
+          if target.features[j].data_id == 12
+            set_data(file, 'paralysis: '+ (target.features[j].value * 100).round.to_s + ',', true)
+          end
+          if target.features[j].data_id == 13
+            set_data(file, 'burn: '+ (target.features[j].value * 100).round.to_s + ',', true)
+          end
+          if target.features[j].data_id == 14
+            set_data(file, 'freeze: '+ (target.features[j].value * 100).round.to_s + ',', true)
+          end
+          if target.features[j].data_id == 15
+            set_data(file, 'shock: '+ (target.features[j].value * 100).round.to_s + ',', true)
+          end
+          if target.features[j].data_id == 16
+            set_data(file, 'slow: '+ (target.features[j].value * 100).round.to_s + ',', true)
+          end
+          if target.features[j].data_id == 17
+            set_data(file, 'stop: '+ (target.features[j].value * 100).round.to_s + ',', true)
+          end
+          if target.features[j].data_id == 18
+            set_data(file, 'mini: '+ (target.features[j].value * 100).round.to_s + ',', true)
+          end
+          if target.features[j].data_id == 19
+            set_data(file, 'zombie: '+ (target.features[j].value * 100).round.to_s + ',', true)
+          end
+          if target.features[j].data_id == 20
+            set_data(file, 'petrify: '+ (target.features[j].value * 100).round.to_s + ',', true)
+          end
+          if target.features[j].data_id == 21
+            set_data(file, 'digest: '+ (target.features[j].value * 100).round.to_s + ',', true)
+          end
+          if target.features[j].data_id == 22
+            set_data(file, 'stun: '+ (target.features[j].value * 100).round.to_s + ',', true)
+          end
+          if target.features[j].data_id == 23
+            set_data(file, 'slime: '+ (target.features[j].value * 100).round.to_s + ',', true)
+          end
+          if target.features[j].data_id == 24
+            set_data(file, 'horny: '+ (target.features[j].value * 100).round.to_s + ',', true)
+          end
+          if target.features[j].data_id == 25
+            set_data(file, 'trance: '+ (target.features[j].value * 100).round.to_s + ',', true)
+          end
+          if target.features[j].data_id == 26
+            set_data(file, 'seduction: '+ (target.features[j].value * 100).round.to_s + ',', true)
+          end
+          if target.features[j].data_id == 27
+            set_data(file, 'incontinence: '+ (target.features[j].value * 100).round.to_s + ',', true)
+          end
+        end
+      end
+      set_data(file, '},')
+
+      ## skillPower
+      temp = 'skillPower: ['
+      cnt = 0
+      target.note.each_line do |line|
+        if /<スキルタイプ強化\s?((?:\d+\-\d+(?:\,\s?)?)+)>/i.match(line)
+          $1.scan(/(\d+)\-(\d+)/){|a, b|
+            if cnt != 0
+              temp = temp + ', '
+            end
+            temp = temp + '{id: \'' + a.to_s + '\', power: ' + b.to_s + '}'
+            cnt = cnt + 1
+          }
+        end
+      end
+      temp = temp + '],'
+      set_data(file, temp, true)
+
+
+      ## skillStateUp
+      temp = 'skillStateUp: ['
+      cnt = 0
+      target.note.each_line do |line|
+        if /<ステート割合強化タイプ\s?((?:\d+\-\d+(?:\,\s?)?)+)>/i.match(line)
+          $1.scan(/(\d+)\-(\d+)/){|a, b|
+            if cnt != 0
+              temp = temp + ', '
+            end
+            temp = temp + '{id: \'' + a.to_s + '\', power: ' + b.to_s + '}'
+            cnt = cnt + 1
+          }
+        end
+      end
+      temp = temp + '],'
+      set_data(file, temp, true)
+
+
+      ## raceKill
+      temp = 'raceKill: ['
+      cnt = 0
+      for j in 0...target.features.size
+        if target.features[j].code == 31
+          if target.features[j].data_id >= 11 && target.features[j].data_id <= 34
+            if cnt != 0
+              temp = temp + ', '
+            end
+            temp = temp + '\'' + target.features[j].data_id.to_s + '\''
+            cnt = cnt + 1
+          end
+        end
+      end
+      temp = temp + '],'
+      set_data(file, temp, true)
+
+      set_data(file, '},')
+    end
+  end
+  set_data(file, '];')
+end
+
+def extract_mgq_job(file, i)
+  class_data = get_class
+
+  target = class_data[i]
+
+  if class_data[i].name != '***더미' &&  class_data[i].name != '**더미' &&  class_data[i].name != ''
+    set_data(file, '{')
+
+
+    set_data(file, 'id: \''+ class_data[i].id.to_s + '\',', true)
+    set_data(file, 'name: \''+ class_data[i].name + '\',', true)
+
+
+    ## learningSkills
+    temp = 'learningSkills: ['
+    cnt = 0
+    for j in 0...target.learnings.size
+      if cnt != 0
+        temp = temp + ', '
+      end
+      temp = temp + '{id: \'' + target.learnings[j].skill_id.to_s + '\', level: ' + target.learnings[j].level.to_s + '}'
+      cnt = cnt + 1
+    end
+    temp = temp + '],'
+    set_data(file, temp, true)
+
+    ## 요구 직업 정규식
+    temp = 'require: ['
+    cnt = 0
+    class_data[i].note.each_line do |line|
+      if /<要求経験職\s?((?:\d+\-\d+(?:\,\s?)?)+)>/i.match(line)
+        $1.scan(/(\d+)\-(\d+)/){|a, b|
+          if cnt != 0
+            temp = temp + ', '
+          end
+          temp = temp + '\'' + a.to_s + '\''
+          cnt = cnt + 1
+        }
+      end
+    end
+    temp = temp + '],'
+    set_data(file, temp, true)
+
+    ## addSkill
+    temp = 'addSkill: ['
+    cnt = 0
+    for j in 0...class_data[i].features.size
+      if class_data[i].features[j].code == 41
+        if cnt != 0
+          temp = temp + ', '
+        end
+        temp = temp + '\'' + class_data[i].features[j].data_id.to_s + '\''
+        cnt = cnt + 1
+      end
+    end
+    temp = temp + '],'
+    set_data(file, temp, true)
+
+    ## addWeapon
+    temp = 'addWeapon: ['
+    cnt = 0
+    for j in 0...class_data[i].features.size
+      if class_data[i].features[j].code == 51
+        if cnt != 0
+          temp = temp + ', '
+        end
+        temp = temp + '\'' + class_data[i].features[j].data_id.to_s + '\''
+        cnt = cnt + 1
+      end
+    end
+    temp = temp + '],'
+    set_data(file, temp, true)
+
+    ## addArmor
+    temp = 'addArmor: ['
+    cnt = 0
+    for j in 0...class_data[i].features.size
+      if class_data[i].features[j].code == 52
+        if cnt != 0
+          temp = temp + ', '
+        end
+        temp = temp + '\'' + class_data[i].features[j].data_id.to_s + '\''
+        cnt = cnt + 1
+      end
+    end
+    temp = temp + '],'
+    set_data(file, temp, true)
+
+    ## HP
+    for j in 0...class_data[i].features.size
+      if class_data[i].features[j].code == 21
+        if class_data[i].features[j].data_id == 0
+          set_data(file, 'hp: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+        end
+      end
+    end
+
+    ## MP
+    for j in 0...class_data[i].features.size
+      if class_data[i].features[j].code == 21
+        if class_data[i].features[j].data_id == 1
+          set_data(file, 'mp: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+        end
+      end
+    end
+
+    if i <= 149 #sp 계산, if job
+      temp = 100
+      class_data[i].note.each_line do |line|
+        if /<最大TP増加\s?(\d+)\%>/i.match(line)
+          temp = $1.to_f.round
+          temp = 100 + temp
+        end
+        if /<最大TP減少\s?(\d+)\%>/i.match(line)
+          temp = $1.to_f.round
+          temp = 100 - temp
+        end
+      end
+      set_data(file, 'sp: '+ temp.to_s + ',', true)
+    end
+    if i > 150
+      set_data(file, 'sp: 100,', true)
+    end
+
+    ## ATK DEF MAT MDF AGI LUK
+    for j in 0...class_data[i].features.size
+      if class_data[i].features[j].code == 21
+        if class_data[i].features[j].data_id == 2
+          set_data(file, 'atk: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+        end
+        if class_data[i].features[j].data_id == 3
+          set_data(file, 'def: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+        end
+        if class_data[i].features[j].data_id == 4
+          set_data(file, 'mat: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+        end
+        if class_data[i].features[j].data_id == 5
+          set_data(file, 'mdf: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+        end
+        if class_data[i].features[j].data_id == 6
+          set_data(file, 'agi: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+        end
+        if class_data[i].features[j].data_id == 7
+          set_data(file, 'luk: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+        end
+      end
+    end
+
+    ## accuracy critical evasion magicEvasion counter magicCounter
+    ## hpRegen mpRegen spRegen reflect magicReflect
+    for j in 0...class_data[i].features.size
+      if class_data[i].features[j].code == 22
+        if class_data[i].features[j].data_id == 0
+          set_data(file, 'accuracy: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+        end
+        if class_data[i].features[j].data_id == 1
+          set_data(file, 'evasion: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+        end
+        if class_data[i].features[j].data_id == 2
+          set_data(file, 'critical: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+        end
+        if class_data[i].features[j].data_id == 4
+          set_data(file, 'magicEvasion: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+        end
+        if class_data[i].features[j].data_id == 5
+          set_data(file, 'magicReflect: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+        end
+        if class_data[i].features[j].data_id == 6
+          set_data(file, 'counter: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+        end
+        if class_data[i].features[j].data_id == 7
+          set_data(file, 'hpRegen: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+        end
+        if class_data[i].features[j].data_id == 8
+          set_data(file, 'mpRegen: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+        end
+        if class_data[i].features[j].data_id == 9
+          set_data(file, 'spRegen: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+        end
+      end
+    end
+
+    ## 나머지
+    for j in 0...class_data[i].features.size
+      if class_data[i].features[j].code == 23
+        if class_data[i].features[j].data_id == 0
+          set_data(file, 'aggroRate: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+        end
+        if class_data[i].features[j].data_id == 1
+          set_data(file, 'defenceRate: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+        end
+        if class_data[i].features[j].data_id == 2
+          set_data(file, 'healRate: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+        end
+        if class_data[i].features[j].data_id == 3
+          set_data(file, 'itemUseRate: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+        end
+        if class_data[i].features[j].data_id == 4
+          set_data(file, 'mpCost: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+        end
+        if class_data[i].features[j].data_id == 5
+          set_data(file, 'spCharge: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+        end
+        if target.features[j].data_id == 6
+          set_data(file, 'physicalDamage: '+ (target.features[j].value * 100).round.to_s + ',', true)
+        end
+        if target.features[j].data_id == 7
+          set_data(file, 'magicDamage: '+ (target.features[j].value * 100).round.to_s + ',', true)
+        end
+        if target.features[j].data_id == 8
+          set_data(file, 'floorDamage: '+ (target.features[j].value * 100).round.to_s + ',', true)
+        end
+        if class_data[i].features[j].data_id == 9
+          set_data(file, 'expRate: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+        end
+      end
+    end
+
+    ## spCost
+    class_data[i].note.each_line do |line|
+      if /<TP消費率\s?(\d+)\%>/i.match(line)
+        set_data(file, 'spCost: '+ $1.to_f.round.to_s + ',', true)
+      end
+    end
+
+    ## 특수 플래그
+    for j in 0...target.features.size
+      if target.features[j].code == 34
+        set_data(file, 'moreAction: '+ target.features[j].value.to_i.to_s + ',', true)
+      end
+      if target.features[j].code == 55
+          set_data(file, 'dualWield: true,', true)
+      end
+      if target.features[j].code == 61
+        if target.features[j].data_id == 0
+          set_data(file, 'moreAction: '+ (target.features[j].value * 100).round.to_s + ',', true)
+        end
+      end
+      if target.features[j].code == 62
+        if target.features[j].data_id == 0
+          set_data(file, 'autoBattle: true,', true)
+        end
+      end
+      if target.features[j].code == 64
+        if target.features[j].data_id == 2
+          set_data(file, 'noBackstab: true,', true)
+        end
+      end
+    end
+
+    ## elementResist
+    set_data(file, 'elementResist: {')
+    for j in 0...class_data[i].features.size
+      if class_data[i].features[j].code == 11
+        if class_data[i].features[j].value != 1.0
+          if class_data[i].features[j].data_id == 1
+            set_data(file, 'physical: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+          end
+          if class_data[i].features[j].data_id == 2
+            set_data(file, 'pleasure: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+          end
+          if class_data[i].features[j].data_id == 3
+            set_data(file, 'fire: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+          end
+          if class_data[i].features[j].data_id == 4
+            set_data(file, 'ice: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+          end
+          if class_data[i].features[j].data_id == 5
+            set_data(file, 'lightning: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+          end
+          if class_data[i].features[j].data_id == 6
+            set_data(file, 'wind: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+          end
+          if class_data[i].features[j].data_id == 7
+            set_data(file, 'earth: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+          end
+          if class_data[i].features[j].data_id == 8
+            set_data(file, 'water: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+          end
+          if class_data[i].features[j].data_id == 9
+            set_data(file, 'holy: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+          end
+          if class_data[i].features[j].data_id == 10
+            set_data(file, 'dark: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+          end
+          if class_data[i].features[j].data_id == 36
+            set_data(file, 'bio: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+          end
+          if class_data[i].features[j].data_id == 35
+            set_data(file, 'sonic: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+          end
+          if class_data[i].features[j].data_id == 39
+            set_data(file, 'special: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+          end
+        end
+      end
+    end
+    set_data(file, '},')
+
+    ## stateResist
+    set_data(file, 'stateResist: {')
+    for j in 0...class_data[i].features.size
+      if class_data[i].features[j].code == 13
+        if class_data[i].features[j].value != 1.0
+          if class_data[i].features[j].data_id == 230
+            set_data(file, 'death: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+          end
+          if class_data[i].features[j].data_id == 231
+            set_data(file, 'ascension: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+          end
+          if class_data[i].features[j].data_id == 232
+            set_data(file, 'climax: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+          end
+          if class_data[i].features[j].data_id == 28
+            set_data(file, 'bind: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+          end
+          if class_data[i].features[j].data_id == 7
+            set_data(file, 'poison: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+          end
+          if class_data[i].features[j].data_id == 8
+            set_data(file, 'blind: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+          end
+          if class_data[i].features[j].data_id == 9
+            set_data(file, 'silence: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+          end
+          if class_data[i].features[j].data_id == 10
+            set_data(file, 'confusion: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+          end
+          if class_data[i].features[j].data_id == 11
+            set_data(file, 'sleep: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+          end
+          if class_data[i].features[j].data_id == 12
+            set_data(file, 'paralysis: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+          end
+          if class_data[i].features[j].data_id == 13
+            set_data(file, 'burn: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+          end
+          if class_data[i].features[j].data_id == 14
+            set_data(file, 'freeze: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+          end
+          if class_data[i].features[j].data_id == 15
+            set_data(file, 'shock: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+          end
+          if class_data[i].features[j].data_id == 16
+            set_data(file, 'slow: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+          end
+          if class_data[i].features[j].data_id == 17
+            set_data(file, 'stop: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+          end
+          if class_data[i].features[j].data_id == 18
+            set_data(file, 'mini: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+          end
+          if class_data[i].features[j].data_id == 19
+            set_data(file, 'zombie: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+          end
+          if class_data[i].features[j].data_id == 20
+            set_data(file, 'petrify: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+          end
+          if class_data[i].features[j].data_id == 21
+            set_data(file, 'digest: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+          end
+          if class_data[i].features[j].data_id == 22
+            set_data(file, 'stun: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+          end
+          if class_data[i].features[j].data_id == 23
+            set_data(file, 'slime: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+          end
+          if class_data[i].features[j].data_id == 24
+            set_data(file, 'horny: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+          end
+          if class_data[i].features[j].data_id == 25
+            set_data(file, 'trance: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+          end
+          if class_data[i].features[j].data_id == 26
+            set_data(file, 'seduction: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+          end
+          if class_data[i].features[j].data_id == 27
+            set_data(file, 'incontinence: '+ (class_data[i].features[j].value * 100).round.to_s + ',', true)
+          end
+        end
+      end
+    end
+    set_data(file, '},')
+
+    ## stateOnHit
+    set_data(file, 'stateOnHit: {')
+    for j in 0...target.features.size
+      if target.features[j].code == 32
+        if target.features[j].data_id == 230
+          set_data(file, 'death: '+ (target.features[j].value * 100).round.to_s + ',', true)
+        end
+        if target.features[j].data_id == 231
+          set_data(file, 'ascension: '+ (target.features[j].value * 100).round.to_s + ',', true)
+        end
+        if target.features[j].data_id == 232
+          set_data(file, 'climax: '+ (target.features[j].value * 100).round.to_s + ',', true)
+        end
+        if target.features[j].data_id == 28
+          set_data(file, 'bind: '+ (target.features[j].value * 100).round.to_s + ',', true)
+        end
+        if target.features[j].data_id == 7
+          set_data(file, 'poison: '+ (target.features[j].value * 100).round.to_s + ',', true)
+        end
+        if target.features[j].data_id == 8
+          set_data(file, 'blind: '+ (target.features[j].value * 100).round.to_s + ',', true)
+        end
+        if target.features[j].data_id == 9
+          set_data(file, 'silence: '+ (target.features[j].value * 100).round.to_s + ',', true)
+        end
+        if target.features[j].data_id == 10
+          set_data(file, 'confusion: '+ (target.features[j].value * 100).round.to_s + ',', true)
+        end
+        if target.features[j].data_id == 11
+          set_data(file, 'sleep: '+ (target.features[j].value * 100).round.to_s + ',', true)
+        end
+        if target.features[j].data_id == 12
+          set_data(file, 'paralysis: '+ (target.features[j].value * 100).round.to_s + ',', true)
+        end
+        if target.features[j].data_id == 13
+          set_data(file, 'burn: '+ (target.features[j].value * 100).round.to_s + ',', true)
+        end
+        if target.features[j].data_id == 14
+          set_data(file, 'freeze: '+ (target.features[j].value * 100).round.to_s + ',', true)
+        end
+        if target.features[j].data_id == 15
+          set_data(file, 'shock: '+ (target.features[j].value * 100).round.to_s + ',', true)
+        end
+        if target.features[j].data_id == 16
+          set_data(file, 'slow: '+ (target.features[j].value * 100).round.to_s + ',', true)
+        end
+        if target.features[j].data_id == 17
+          set_data(file, 'stop: '+ (target.features[j].value * 100).round.to_s + ',', true)
+        end
+        if target.features[j].data_id == 18
+          set_data(file, 'mini: '+ (target.features[j].value * 100).round.to_s + ',', true)
+        end
+        if target.features[j].data_id == 19
+          set_data(file, 'zombie: '+ (target.features[j].value * 100).round.to_s + ',', true)
+        end
+        if target.features[j].data_id == 20
+          set_data(file, 'petrify: '+ (target.features[j].value * 100).round.to_s + ',', true)
+        end
+        if target.features[j].data_id == 21
+          set_data(file, 'digest: '+ (target.features[j].value * 100).round.to_s + ',', true)
+        end
+        if target.features[j].data_id == 22
+          set_data(file, 'stun: '+ (target.features[j].value * 100).round.to_s + ',', true)
+        end
+        if target.features[j].data_id == 23
+          set_data(file, 'slime: '+ (target.features[j].value * 100).round.to_s + ',', true)
+        end
+        if target.features[j].data_id == 24
+          set_data(file, 'horny: '+ (target.features[j].value * 100).round.to_s + ',', true)
+        end
+        if target.features[j].data_id == 25
+          set_data(file, 'trance: '+ (target.features[j].value * 100).round.to_s + ',', true)
+        end
+        if target.features[j].data_id == 26
+          set_data(file, 'seduction: '+ (target.features[j].value * 100).round.to_s + ',', true)
+        end
+        if target.features[j].data_id == 27
+          set_data(file, 'incontinence: '+ (target.features[j].value * 100).round.to_s + ',', true)
+        end
+      end
+    end
+    set_data(file, '},')
+
+    if i <= 149 #abilityPoints 계산, if job
+      temp = 'abilityPoints: ['
+      cnt = 0
+      class_data[i].note.each_line do |line|
+        if /<メモライズ容量補正\s?((?:\d+(?:\,\s?)?)+)>/i.match(line)
+          $1.split(/\,\s?/).each_with_index{|capacity, i|
+            if cnt != 0
+              temp = temp + ', '
+            end
+            temp = temp + capacity
+            cnt = cnt + 1
+          }
+        end
+      end
+      temp = temp + '],'
+      set_data(file, temp, true)
+    end
+
+    set_data(file, '},')
+  end
+end
+
+#===============================================================================
+def extract_actor_ace_race(file)
+  class_data = get_class
+  # set_data(file, 'import { Job } from "../types/jobs";') #job
+  # set_data(file, 'export const JOB_LIST: Job[] = [') # job
+  set_data(file, 'import { Race } from "../types/races";') # race
+  set_data(file, 'export const RACE_LIST: Race[] = [') # race
+  # for i in 1...149 # job
+  # for i in 6998...7080 # job2
+  # for i in 7401...7455 # race2
+  for i in 151...374 # race
+    extract_mgq_job(file, i)
+  end
+  for i in 7401...7455 # race2
+    extract_mgq_job(file, i)
+  end
+  set_data(file, '];')
+end
+
+
+################################
+
+def extract_actor_ace_actor(file)
+  actor = get_actor
+  class_data = get_class
+  temp = ''
+  set_data(file, 'import { Actor } from "../types/actors";')
+  set_data(file, 'export const ACTOR_LIST: Actor[] = [')
+  for i in 1...actor.size
+    if actor[i].name != '***더미' &&  actor[i].name != '**더미' &&  actor[i].name != ''
+      set_data(file, '{')
+      set_data(file, 'id: \''+ actor[i].id.to_s + '\',', true)
+      set_data(file, 'name: \''+ actor[i].name + '\',', true)
+      set_data(file, 'secondaryName: \''+ actor[i].nickname + '\',', true)
+      set_data(file, 'hp: '+ class_data[i+400].params[0,60].to_s + ',', true)
+      set_data(file, 'mp: '+ class_data[i+400].params[1,60].to_s + ',', true)
+      set_data(file, 'sp: 30,', true)
+      set_data(file, 'atk: '+ class_data[i+400].params[2,60].to_s + ',', true)
+      set_data(file, 'def: '+ class_data[i+400].params[3,60].to_s + ',', true)
+      set_data(file, 'mat: '+ class_data[i+400].params[4,60].to_s + ',', true)
+      set_data(file, 'mdf: '+ class_data[i+400].params[5,60].to_s + ',', true)
+      set_data(file, 'agi: '+ class_data[i+400].params[6,60].to_s + ',', true)
+      set_data(file, 'luk: '+ class_data[i+400].params[7,60].to_s + ',', true)
+      set_data(file, 'defaultJob: \''+ actor[i].class_id.to_s + '\',', true)
+
+      actor[i].note.each_line do |line|
+        if /<初期サブクラス\s?(\d+)>/i.match(line) # 시작 종족 정규식
+          set_data(file, 'defaultRace: \''+ $1.to_s + '\',', true)
+        end
+      end
+
+
+      ## 초기 직업 정규식
+      if i == 1 ## 루카
+        temp = 'initJob: [{id: \'141\', level: 1}],'
+      end
+      if i != 1
+        temp = 'initJob: ['
+        cnt = 0
+        actor[i].note.each_line do |line|
+          if /<経験済職業\s?((?:\d+\-\d+(?:\,\s?)?)+)>/i.match(line)
+            $1.scan(/(\d+)\-(\d+)/){|a, b|
+              if a.to_i < 151
+                if cnt != 0
+                  temp = temp + ', '
+                end
+                temp = temp + '{id: \'' + a.to_s + '\', level: ' + b.to_s + '}'
+                cnt = cnt + 1
+              end
+            }
+          end
+        end
+        temp = temp + '],'
+      end
+      set_data(file, temp, true)
+
+
+      ## 초기 종족 정규식
+      if i == 1 ## 루카
+        temp = 'initRace: [{id: \'151\', level: 1}],'
+      end
+      if i != 1
+        temp = 'initRace: ['
+        cnt = 0
+        actor[i].note.each_line do |line|
+          if /<経験済職業\s?((?:\d+\-\d+(?:\,\s?)?)+)>/i.match(line)
+            $1.scan(/(\d+)\-(\d+)/){|a, b|
+              if a.to_i >= 151 && a.to_i < 400
+                if cnt != 0
+                  temp = temp + ', '
+                end
+                temp = temp + '{id: \'' + a.to_s + '\', level: ' + b.to_s + '}'
+                cnt = cnt + 1
+              end
+            }
+          end
+        end
+        temp = temp + '],'
+      end
+      set_data(file, temp, true)
+
+
+      ## artist
+      if i == 701 ## 네로
+        set_data(file, 'artist: \'しき\',', true)
+      end
+      if i != 701
+        actor[i].note.each_line do |line|
+          if /<イラスト(?:\:|：)(\S+)>/i.match(line)
+            set_data(file, 'artist: \''+ $1.to_s + '\',', true)
+          end
+        end
+      end
+
+      set_data(file, '},')
+    end
+  end
+  set_data(file, '];')
+end
+
+#===============================================================================
+# ● Extract Actor in VX / XP
+#===============================================================================
+def extract_actor(file)
+  put_actor_block(file)
+  actor = get_actor
+	#$cnt = 1
+  for i in 1...actor.size
+    put_baseid_block(file, actor[i].id, actor[i].name)
+    set_data(file, actor[i].name, true)
+  end
+end
+
+#===============================================================================
+# ● Extract Class
+#===============================================================================
+def extract_class(file)
+  put_class_block(file)
+  class_data = get_class
+	#$cnt = 1
+  for i in 1...class_data.size
+    put_baseid_block(file, class_data[i].id, class_data[i].name)
+    set_data(file, class_data[i].name, true)
+  end
+end
+
+#===============================================================================
+# ● Extract Skill
+#===============================================================================
+def extract_skill(file)
+  put_skill_block(file)
+  skill = get_skill
+  for i in 1...skill.size
+		#$cnt = 1
+    put_baseid_block(file, skill[i].id, skill[i].name)
+    set_data(file, skill[i].name, true)
+		dec = skill[i].description
+    dec = '' if dec == nil
+    for data in dec.split("\r\n")
+      set_data(file, data)
+      set_data(file, '') if dec[dec.size - 2, dec.size] == "\r\n"
+    end
+    #set_data(file, '') if dec == ""
+#~ 		dec = dec.gsub("\r\n", "%^%")
+#~ 		set_data(file, dec, true)
+  end
+end
+
+#===============================================================================
+# ● Extract Skill Message (message1, message2) VX, ACE
+#===============================================================================
+def extract_skill_message(file)
+  put_skill_message_block(file)
+  skill = get_skill
+  for i in 1...skill.size
+		#$cnt = 1
+    put_baseid_block(file, skill[i].id, skill[i].name)
+    set_data(file, skill[i].message1, true)
+    set_data(file, skill[i].message2, true)
+  end
+end
+
+
+#===============================================================================
+# ● Extract Item
+#===============================================================================
+def extract_item(file)
+  put_item_block(file)
+  item = get_item
+  for i in 1...item.size
+		#$cnt = 1
+    put_baseid_block(file, item[i].id, item[i].name)
+    set_data(file, item[i].name, true)
+		dec = item[i].description
+    dec = '' if dec == nil
+    for data in dec.split("\r\n")
+      set_data(file, data)
+      set_data(file, '') if dec[dec.size - 2, dec.size] == "\r\n"
+    end
+    #set_data(file, '') if dec == ""
+#~ 		dec = dec.gsub("\r\n", "%^%")
+#~ 		set_data(file, dec, true)
+  end
+end
+
+#===============================================================================
+# ● Extract Weapon
+#===============================================================================
+def extract_weapon(file)
+  put_weapon_block(file)
+  weapon = get_weapon
+  for i in 1...weapon.size
+		#$cnt = 1
+    put_baseid_block(file, weapon[i].id, weapon[i].name)
+    set_data(file, weapon[i].name, true)
+		dec = weapon[i].description
+    dec = '' if dec == nil
+    for data in dec.split("\r\n")
+      set_data(file, data)
+      set_data(file, '') if dec[dec.size - 2, dec.size] == "\r\n"
+    end
+    #set_data(file, '') if dec == ""
+#~ 		dec = dec.gsub("\r\n", "&^%")
+#~ 		set_data(file, dec, true)
+  end
+end
+
+#===============================================================================
+# ● Extract Armor
+#===============================================================================
+def extract_armor(file)
+  put_armor_block(file)
+  armor = get_armor
+  for i in 1...armor.size
+		#$cnt = 1
+    put_baseid_block(file, armor[i].id, armor[i].name)
+    set_data(file, armor[i].name, true)
+		dec = armor[i].description
+    for data in dec.split("\r\n")
+      set_data(file, data)
+      set_data(file, '') if dec[dec.size - 2, dec.size] == "\r\n"
+    end
+    #set_data(file, '') if dec == ""
+#~ 		dec = dec.gsub("\r\n", "%^%")
+#~ 		set_data(file, dec, true)
+  end
+end
+
+#===============================================================================
+# ● Extract Enemy
+#===============================================================================
+def extract_enemy(file)
+  put_enemy_block(file)
+  enemy = get_enemy
+	#$cnt = 1
+  for i in 1...enemy.size
+    put_baseid_block(file, enemy[i].id, enemy[i].name)
+    set_data(file, enemy[i].name, true)
+  end
+end
+
+#===============================================================================
+# ● Extract State
+#===============================================================================
+def extract_state(file)
+  put_state_block(file)
+  state = get_state
+	#$cnt = 1
+  for i in 1...state.size
+    put_baseid_block(file, state[i].id, state[i].name)
+    set_data(file, state[i].name, true)
+  end
+end
+
+#===============================================================================
+# ● Extract State Message (message 1 ~ 4) VX, ACE
+#===============================================================================
+def extract_state_message(file)
+  put_state_message_block(file)
+  state = get_state
+  for i in 1...state.size
+		#$cnt = 1
+    put_baseid_block(file, state[i].id, state[i].name)
+    set_data(file, state[i].message1, true)
+    set_data(file, state[i].message2, true)
+		set_data(file, state[i].message3, true)
+		set_data(file, state[i].message4, true)
+  end
+end
+
+#===============================================================================
+# ● Extract Animation
+#===============================================================================
+def extract_animation(file)
+  put_animation_block(file)
+  animation = get_animation
+  for i in 1...animation.size
+    put_baseid_block(file, animation[i].id, animation[i].name)
+    set_data(file, animation[i].name, true)
+  end
+end
+
+#===============================================================================
+# ● Extract Tileset --- XP, ACE
+#===============================================================================
+def extract_tileset(file)
+  put_tileset_block(file)
+  tileset = get_tileset
+  for i in 1...tileset.size
+    put_baseid_block(file, tileset[i].id, tileset[i].name)
+    set_data(file, tileset[i].name, true)
+  end
+end
+
+#===============================================================================
+# ● Extract Memos --- VX, ACE
+#===============================================================================
+def extract_database_memo
+  database = [get_actor, get_class, get_skill, get_item, get_weapon,
+    get_armor, get_enemy, get_state ]
+  #database.push(get_tileset) if $project_version == 1
+	data_name = ["Actor", "Class", "Skill", "Item", "Weapon",
+		"Armor", "Enemy", "State", "Tileset"]
+#~   actor = get_actor      #0
+#~   class_data = get_class #1
+#~   skill = get_skill      #2
+#~   item = get_item        #3
+#~   weapon = get_weapon    #4
+#~   armor = get_armor      #5
+#~   enemy = get_enemy      #6
+#~   state = get_state      #7
+#~   tileset = get_tileset  #8
+
+  file = File.open("ExtractedData/Database_Memo.txt", "w")
+  put_start_block(file)
+	for i in 0...database.size
+		next if (i == 0 || i ==1 || i == 8) && $project_version == 2
+    file.puts("#============================================= " + data_name[i] + "'s Memos")
+		for j in 1...database[i].size
+      id = database[i][j].id ; name = database[i][j].name
+      file.puts(sprintf("#===============  %s ID : %03d,   Name : %s", data_name[i], id, name))
+			dec = database[i][j].note
+			for data in dec.split("\r\n")
+        set_data(file, data)
+			end
+#~       set_data(file, '') if dec[-2, 2] == "\r\n"
+		end
+	end
+  put_end_block(file)
+  file.close
+end
+
+
+#===============================================================================
+# ● Extract Base Item
+#===============================================================================
+def extract_database
+	$cnt = 1
+  file = File.open(Extractor::DATABASE, "w")
+  put_start_block(file)
+  extract_actor_ace_actor(file) if $project_version == 1
+#  extract_actor(file) if $project_version != 1
+#  extract_class(file)
+#  extract_skill(file)
+#  extract_skill_message(file) if $project_version != 3
+#  extract_item(file)
+#  extract_weapon(file)
+#  extract_armor(file)
+#  extract_enemy(file)
+#  extract_state(file)
+#  extract_state_message(file) if $project_version != 3
+  put_end_block(file)
+  file.close
+
+#~   $cnt = 1
+#~   file = File.open("ExtractedData/Database_Animation&Tileset.txt", "w")
+#~   put_start_block(file)
+#~   extract_animation(file)
+#~   extract_tileset(file) if $project_version != 2
+#~   put_end_block(file)
+#~   file.close
+
+  $cnt = 1
+  extract_database_memo if $project_version != 3
+end

@@ -1,0 +1,39 @@
+import { Component, OnInit } from '@angular/core';
+import { DataService } from '../../shared/data.service';
+import { CalculateService } from '../../shared/calculate.service';
+import { Skill, SkillType } from '../../shared/types/skills';
+import { SkillNameFilter, SkillTypeFilter } from '../../shared/utils/filter';
+import { SkillComparators } from '../../shared/utils/comparator';
+
+@Component({
+  selector: 'app-skills-list',
+  templateUrl: './skills-list.component.html'
+})
+
+export class SkillsListComponent implements OnInit {
+  nameFilter = new SkillNameFilter();
+  typeFilter = new SkillTypeFilter(this.dataService);
+  skillComparators = SkillComparators;
+
+  skillList: Skill[];
+  skillType: { [key: string]: string } = SkillType;
+  skillTypes: string[] = [];
+
+  constructor(
+    public dataService: DataService,
+    public calculateService: CalculateService,
+  ) { }
+
+  ngOnInit() {
+    for (let key in SkillType) {
+      this.skillTypes.push(SkillType[key]);
+    }
+    this.skillList = this.dataService.getAllSkills().skills;
+  }
+
+  viewDetail(skill: Skill) {
+    // this.router.navigate([`./${skill.id}`], { relativeTo: this.route });
+  }
+}
+
+

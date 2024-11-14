@@ -1,0 +1,16 @@
+/* You can add global styles to this file, and also import other style files */
+:focus-visible {
+  outline: none;
+}
+
+.datagrid-cell {
+  cursor: pointer;
+}
+
+.datagrid-table .datagrid-cell:focus {
+  outline: none;
+}
+
+.datagrid-table .datagrid-column:focus {
+  outline: none;
+}

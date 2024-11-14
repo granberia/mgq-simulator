@@ -1,0 +1,40 @@
+<ng-container *ngFor="let item of baseRaces">
+  <span [ngClass]="{'label-info': dataService.actorRaceFilter.length !== 0 && dataService.actorRaceFilter.includes(item), 'label-light-blue': dataService.actorRaceFilter.length !== 0 && dataService.actorRaceFilter.includes(item)}"
+    class="label clickable" style="cursor: pointer" (click)="addFilter(item)">
+    {{ item }}
+    <span class="badge">{{ total[item] }}</span>
+  </span>
+</ng-container>
+<clr-datagrid>
+  <clr-dg-column [clrDgSortBy]="actorComparators.nameComparator">이름
+    <clr-dg-string-filter [clrDgStringFilter]="nameFilter"></clr-dg-string-filter>
+  </clr-dg-column>
+  <clr-dg-column [clrDgSortBy]="actorComparators.secondaryNameComparator">별칭
+    <clr-dg-string-filter [clrDgStringFilter]="secondaryNameFilter"></clr-dg-string-filter>
+  </clr-dg-column>
+  <clr-dg-column [clrDgSortBy]="actorComparators.artistComparator">일러스트
+  </clr-dg-column>
+  <clr-dg-column [clrDgSortBy]="actorComparators.hpComparator">HP</clr-dg-column>
+  <clr-dg-column [clrDgSortBy]="actorComparators.mpComparator">MP</clr-dg-column>
+  <clr-dg-column [clrDgSortBy]="actorComparators.spComparator">SP</clr-dg-column>
+  <clr-dg-column [clrDgSortBy]="actorComparators.atkComparator">공격력</clr-dg-column>
+  <clr-dg-column [clrDgSortBy]="actorComparators.defComparator">방어력</clr-dg-column>
+  <clr-dg-column [clrDgSortBy]="actorComparators.matComparator">마력</clr-dg-column>
+  <clr-dg-column [clrDgSortBy]="actorComparators.mdfComparator">정신력</clr-dg-column>
+  <clr-dg-column [clrDgSortBy]="actorComparators.agiComparator">민첩성</clr-dg-column>
+  <clr-dg-column [clrDgSortBy]="actorComparators.lukComparator">손재주</clr-dg-column>
+
+  <clr-dg-row *clrDgItems="let actor of actorList">
+    <clr-dg-cell style="padding: 1px; cursor: pointer" (click)="viewDetail(actor)">
+      <img src="assets/faces/{{ actor?.id }}.png" style="width: 32px; height: 32px"> {{ actor.name }}
+    </clr-dg-cell>
+    <ng-container *ngFor="let item of columns">
+      <clr-dg-cell style="cursor: pointer" (click)="viewDetail(actor)">{{ actor[item] }}</clr-dg-cell>
+    </ng-container>
+  </clr-dg-row>
+
+  <clr-dg-footer>
+    {{pagination.totalItems}}명 동료 중 {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}번째
+    <clr-dg-pagination #pagination [clrDgPageSize]="20"></clr-dg-pagination>
+  </clr-dg-footer>
+</clr-datagrid>

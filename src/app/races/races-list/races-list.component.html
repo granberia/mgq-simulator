@@ -1,0 +1,33 @@
+<ng-container *ngFor="let item of baseRaces">
+    <span [ngClass]="{'label-info': dataService.raceFilter.length !== 0 && dataService.raceFilter.includes(item), 'label-light-blue': dataService.raceFilter.length !== 0 && dataService.raceFilter.includes(item)}"
+      class="label clickable" style="cursor: pointer" (click)="addFilter(item)">
+      {{ item }}
+      <span class="badge">{{ total[item] }}</span>
+    </span>
+  </ng-container>
+<clr-datagrid>
+  <clr-dg-column [clrDgSortBy]="raceComparators.nameComparator">종족명
+    <clr-dg-string-filter [clrDgStringFilter]="nameFilter"></clr-dg-string-filter>
+  </clr-dg-column>
+  <clr-dg-column [clrDgSortBy]="raceComparators.hpComparator">HP</clr-dg-column>
+  <clr-dg-column [clrDgSortBy]="raceComparators.mpComparator">MP</clr-dg-column>
+  <clr-dg-column [clrDgSortBy]="raceComparators.spComparator">SP</clr-dg-column>
+  <clr-dg-column [clrDgSortBy]="raceComparators.atkComparator">공격력</clr-dg-column>
+  <clr-dg-column [clrDgSortBy]="raceComparators.defComparator">방어력</clr-dg-column>
+  <clr-dg-column [clrDgSortBy]="raceComparators.matComparator">마력</clr-dg-column>
+  <clr-dg-column [clrDgSortBy]="raceComparators.mdfComparator">정신력</clr-dg-column>
+  <clr-dg-column [clrDgSortBy]="raceComparators.agiComparator">민첩성</clr-dg-column>
+  <clr-dg-column [clrDgSortBy]="raceComparators.lukComparator">손재주</clr-dg-column>
+
+  <clr-dg-row *clrDgItems="let race of raceList">
+    <clr-dg-cell style="cursor: pointer" (click)="viewDetail(race)">{{ race.name }}</clr-dg-cell>
+    <ng-container *ngFor="let item of columns">
+      <clr-dg-cell style="cursor: pointer" (click)="viewDetail(race)">{{ race[item] }}%</clr-dg-cell>
+    </ng-container>
+  </clr-dg-row>
+
+  <clr-dg-footer>
+    {{pagination.totalItems}}개 종족 중 {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}번째
+    <clr-dg-pagination #pagination [clrDgPageSize]="20"></clr-dg-pagination>
+  </clr-dg-footer>
+</clr-datagrid>
