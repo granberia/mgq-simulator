@@ -1324,19 +1324,27 @@ end
 
 #===============================================================================
 def extract_actor_ace_race(file)
+  extract = 'race'
   class_data = get_class
-  # set_data(file, 'import { Job } from "../types/jobs";') #job
-  # set_data(file, 'export const JOB_LIST: Job[] = [') # job
-  set_data(file, 'import { Race } from "../types/races";') # race
-  set_data(file, 'export const RACE_LIST: Race[] = [') # race
-  # for i in 1...149 # job
-  # for i in 6998...7080 # job2
-  # for i in 7401...7455 # race2
-  for i in 151...374 # race
+  if extract == 'job'
+    set_data(file, 'import { Job } from "../types/jobs";') #job
+    set_data(file, 'export const JOB_LIST: Job[] = [') # job
+    for i in 1...149 # job
     extract_mgq_job(file, i)
+    end
+    for i in 6998...7080 # job2
+    extract_mgq_job(file, i)
+    end
   end
-  for i in 7401...7455 # race2
-    extract_mgq_job(file, i)
+  if extract == 'race'
+    set_data(file, 'import { Race } from "../types/races";') # race
+    set_data(file, 'export const RACE_LIST: Race[] = [') # race
+    for i in 151...374 # race
+      extract_mgq_job(file, i)
+    end
+    for i in 7401...7455 # race2
+      extract_mgq_job(file, i)
+    end
   end
   set_data(file, '];')
 end
@@ -1682,7 +1690,7 @@ def extract_database
 	$cnt = 1
   file = File.open(Extractor::DATABASE, "w")
   put_start_block(file)
-  extract_actor_ace_actor(file) if $project_version == 1
+  extract_actor_ace(file) if $project_version == 1
 #  extract_actor(file) if $project_version != 1
 #  extract_class(file)
 #  extract_skill(file)
