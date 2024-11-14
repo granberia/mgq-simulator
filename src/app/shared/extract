@@ -3,7 +3,7 @@
 # ● Extract Actor in VXACE
 #===============================================================================
 def extract_actor_ace(file)
-  extract = 'ability'
+  extract = 'skill'
   datas = get_skill
   temp = ''
   if extract == 'ability'
@@ -1687,6 +1687,7 @@ end
 # ● Extract Base Item
 #===============================================================================
 def extract_database
+  extract = 'fff'
 	$cnt = 1
   file = File.open(Extractor::DATABASE, "w")
   put_start_block(file)

@@ -10,8 +10,7 @@ import { Job } from '../../shared/types/jobs';
 
 @Component({
   selector: 'app-jobs-detail',
-  templateUrl: './jobs-detail.component.html',
-  styleUrls: ['./jobs-detail.component.scss']
+  templateUrl: './jobs-detail.component.html'
 })
 export class JobsDetailComponent implements OnInit {
   description = JOB_DESC_TEXT;
