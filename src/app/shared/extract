@@ -3,7 +3,7 @@
 # ● Extract Actor in VXACE
 #===============================================================================
 def extract_actor_ace(file)
-  extract = 'skill'
+  extract = 'ability'
   datas = get_skill
   temp = ''
   if extract == 'ability'
@@ -14,10 +14,13 @@ def extract_actor_ace(file)
     set_data(file, 'import { Skill } from "../types/skills";') # skill
     set_data(file, 'export const SKILL_LIST: Skill[] = [') # skill
   end
-  for i in 1...6000
+  for i in 1...10100
     if (extract == 'skill' && i >= 901 && i <= 3180) ||
+       (extract == 'skill' && i >= 5765 && i <= 6238) ||
        (extract == 'ability' && i >= 61 && i <= 862) ||
-       (extract == 'ability' && i >= 5621 && i <= 5654)
+       (extract == 'ability' && i >= 5621 && i <= 5654) ||
+       (extract == 'ability' && i >= 6301 && i <= 8593) ||
+       (extract == 'ability' && i >= 9810 && i <= 10100)
       target = datas[i]
       if target.name != '***더미' &&  target.name != '**더미' &&  target.name != ''
         set_data(file, '{')
