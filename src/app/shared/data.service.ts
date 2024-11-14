@@ -94,11 +94,8 @@ export class DataService {
   }
 
   getOneAbilityOrSkill(id: string) {
-    if (Number(id) <= 860 || Number(id) >= 5620) { // 어빌리티
-      return ABILITY_LIST.find(ability => ability.id === id);
-    } else { // 스킬
-      return SKILL_LIST.find(skill => skill.id === id);
-    }
+    const result = ABILITY_LIST.find(ability => ability.id === id);
+    return result ?? SKILL_LIST.find(skill => skill.id === id);
   }
 
   setupDefaultActorValues(target: any) { // interface 를 정의할 때 기본값 설정이 불가능하자 사용한 수단
