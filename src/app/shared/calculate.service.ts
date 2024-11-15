@@ -16,6 +16,15 @@ export class CalculateService {
     }
   }
 
+  calculateFaceDetailStyle(id: number) {
+    return {
+      'width': '96px',
+      'height': '96px',
+      'object-fit': 'none',
+      'object-position': '-' + (id % 4 * 96) + 'px -' + (Math.floor(id / 4) * 96) + 'px',
+    }
+  }
+
   calculateStyle(icon: number) {
     return {
       'width': '24px',

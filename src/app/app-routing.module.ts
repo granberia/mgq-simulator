@@ -1,13 +1,14 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { JobsListComponent } from './jobs/jobs-list/jobs-list.component';
-import { JobsDetailComponent } from './jobs/jobs-detail/jobs-detail.component';
-import { RacesListComponent } from './races/races-list/races-list.component';
-import { RacesDetailComponent } from './races/races-detail/races-detail.component';
-import { ActorsListComponent } from './actors/actors-list/actors-list.component';
+import { JobsListComponent } from './jobs/containers/jobs-list.component';
+import { JobsDetailComponent } from './jobs/containers/jobs-detail.component';
+import { RacesListComponent } from './races/containers/races-list.component';
+import { RacesDetailComponent } from './races/containers/races-detail.component';
+import { ActorsListComponent } from './actors/containers/actors-list.component';
 import { SkillsListComponent } from './skills/skills-list/skills-list.component';
-import { AbilitiesListComponent } from './abilities/abilities-list/abilities-list.component';
+import { AbilitiesListComponent } from './abilities/containers/abilities-list.component';
+import { ActorsDetailComponent } from './actors/containers/actors-detail.component';
 
 const routes: Routes = [
   {
@@ -16,6 +17,7 @@ const routes: Routes = [
     pathMatch: 'full',
   },
   { path: 'actors', component: ActorsListComponent },
+  { path: 'actors/:id', component: ActorsDetailComponent },
   { path: 'races', component: RacesListComponent },
   { path: 'races/:id', component: RacesDetailComponent },
   { path: 'jobs', component: JobsListComponent },

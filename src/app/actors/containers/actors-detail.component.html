@@ -1,0 +1,120 @@
+<div align="center" *ngIf="actor">
+  <div style="width: 1080px" align="left">
+    <div class="clr-row">
+      <div class="status clr-col-12">
+        <div style="font-size: 24px">
+          <div style="max-width: 96px; max-height: '96px'; display: flex">
+            <img src="assets/faces/{{ actor.face }}.png" [ngStyle]="calculateService.calculateFaceDetailStyle(+actor.faceIndex)">
+          </div>
+          <br>
+          <b>{{ actor.name }} ({{ actor.secondaryName }})</b>
+          <br>
+          <br>
+        </div>
+      </div>
+      <div class="status clr-col-2">
+        <b>일러스트</b>
+      </div>
+      <div class="status clr-col-10" *ngIf="actor">
+        {{ actor.artist }}
+      </div>
+      <div class="status clr-col-2">
+        <b>최대 HP</b>
+      </div>
+      <div class="status clr-col-2">
+        {{ actor.hp }}
+      </div>
+      <div class="status clr-col-2">
+        <b>최대 MP</b>
+      </div>
+      <div class="status clr-col-2">
+        {{ actor.mp }}
+      </div>
+      <div class="status clr-col-2">
+        <b>최대 SP</b>
+      </div>
+      <div class="status clr-col-2">
+        {{ actor.sp }}
+      </div>
+      <div class="status clr-col-2">
+        <b>공격력</b>
+      </div>
+      <div class="status clr-col-2">
+        {{ actor.atk }}
+      </div>
+      <div class="status clr-col-2">
+        <b>방어력</b>
+      </div>
+      <div class="status clr-col-2">
+        {{ actor.def }}
+      </div>
+      <div class="status clr-col-2">
+        <b>마력</b>
+      </div>
+      <div class="status clr-col-2">
+        {{ actor.mat }}
+      </div>
+      <div class="status clr-col-2">
+        <b>정신력</b>
+      </div>
+      <div class="status clr-col-2">
+        {{ actor.mdf }}
+      </div>
+      <div class="status clr-col-2">
+        <b>민첩성</b>
+      </div>
+      <div class="status clr-col-2">
+        {{ actor.agi }}
+      </div>
+      <div class="status clr-col-2">
+        <b>손재주</b>
+      </div>
+      <div class="status clr-col-2">
+        {{ actor.luk }}
+      </div>
+      <div class="status clr-col-2">
+        <b>기본 직업</b>
+      </div>
+      <div class="status clr-col-10" *ngIf="actor">
+        {{ dataService.getOneJob(actor.defaultJob).name }}
+      </div>
+      <div class="status clr-col-2">
+        <b>기본 종족</b>
+      </div>
+      <div class="status clr-col-10" *ngIf="actor">
+        {{ dataService.getOneRace(actor.defaultRace).name }}
+      </div>
+    </div>
+
+    <div class="clr-row">
+      <div class="status clr-col-2">
+        <b>초기 직업</b>
+      </div>
+      <div class="status clr-col-10" style="margin-top: 0px">
+        <div class="clr-row">
+          <ng-container *ngFor="let item of actor.initJob">
+            <div class="status col-sm-3">
+              {{ dataService.getOneJob(item.id).name }} Lv {{ item.level }}
+              <br>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+    <div class="clr-row">
+      <div class="status clr-col-2">
+        <b>초기 종족</b>
+      </div>
+      <div class="status clr-col-10" style="margin-top: 0px">
+        <div class="clr-row">
+          <ng-container *ngFor="let item of actor.initRace">
+            <div class="status col-sm-3">
+              {{ dataService.getOneRace(item.id).name }} Lv {{ item.level }}
+              <br>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
