@@ -10,7 +10,7 @@
 
   <clr-dg-row *clrDgItems="let ability of abilityList">
     <clr-dg-cell style="padding: 6px; cursor: pointer" (click)="viewDetail(ability)">
-      <img src="images/icons/iconset.png" [ngStyle]="calculateService.calculateStyle(ability.icon)"> {{ ability.name }}
+      <img src="assets/icons/iconset.png" [ngStyle]="calculateService.calculateStyle(ability.icon)"> {{ ability.name }}
     </clr-dg-cell>
     <clr-dg-cell style="cursor: pointer" (click)="viewDetail(ability)">{{ abilityType[ability.type] }}</clr-dg-cell>
     <clr-dg-cell style="cursor: pointer" (click)="viewDetail(ability)">{{ ability.size }}</clr-dg-cell>

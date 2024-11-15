@@ -6,6 +6,7 @@ import { Actor } from '../../shared/types/actors';
 import { BaseRace, RaceType } from '../../shared/types/races';
 import { ActorComparators } from '../../shared/utils/comparator';
 import { ActorNameFilter, ActorSecondaryNameFilter, ActorArtistFilter } from '../../shared/utils/filter';
+import { CalculateService } from '../../shared/calculate.service';
 
 @Component({
   selector: 'app-actors-list',
@@ -27,6 +28,7 @@ export class ActorsListComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     public dataService: DataService,
+    public calculateService: CalculateService,
   ) { }
 
   ngOnInit() {

@@ -7,6 +7,8 @@ export interface InitRace {
 }
 
 export interface Actor extends Common {
+  face: string;
+  faceIndex: string;
   secondaryName?: string;
   defaultJob: string;
   defaultRace: string;

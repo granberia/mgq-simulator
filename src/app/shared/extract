@@ -1371,6 +1371,8 @@ def extract_actor_ace_actor(file)
     if actor[i].name != '***더미' &&  actor[i].name != '**더미' &&  actor[i].name != ''
       set_data(file, '{')
       set_data(file, 'id: \''+ actor[i].id.to_s + '\',', true)
+      set_data(file, 'face: \''+ actor[i].face_name + '\',', true)
+      set_data(file, 'faceIndex: \''+ actor[i].face_index.to_s + '\',', true)
       set_data(file, 'name: \''+ actor[i].name + '\',', true)
       set_data(file, 'secondaryName: \''+ actor[i].nickname + '\',', true)
       set_data(file, 'hp: '+ class_data[i+400].params[0,60].to_s + ',', true)
@@ -1700,7 +1702,7 @@ def extract_database
 	$cnt = 1
   file = File.open(Extractor::DATABASE, "w")
   put_start_block(file)
-  extract_actor_ace(file) if $project_version == 1
+  extract_actor_ace_actor(file) if $project_version == 1
 #  extract_actor(file) if $project_version != 1
 #  extract_class(file)
 #  extract_skill(file)
