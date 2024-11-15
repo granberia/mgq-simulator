@@ -1,7 +1,6 @@
 import { ActivatedRoute, Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { DataService } from '../../shared/data.service';
-import { ArtistList } from '../../shared/types/artist';
 import { Actor } from '../../shared/types/actors';
 import { BaseRace, RaceType } from '../../shared/types/races';
 import { ActorComparators } from '../../shared/utils/comparator';
@@ -21,7 +20,7 @@ export class ActorsListComponent implements OnInit {
 
   actorList: Actor[];
   baseRaces: BaseRace[] = [];
-  artistList = ArtistList;
+  artistList: string[] = [];
   total: { [key: string]: number } = {};
 
   constructor(
@@ -37,6 +36,7 @@ export class ActorsListComponent implements OnInit {
     }
     const data = this.dataService.getAllActors();
     this.actorList = data.actors;
+    this.artistList = Array.from(new Set(data.actors.map(item => item.artist)));
     this.total = data.total;
   }
 

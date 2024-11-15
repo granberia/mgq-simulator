@@ -4,7 +4,7 @@
   </clr-dg-column>
   <clr-dg-column [clrDgSortBy]="skillComparators.typeComparator">분류
     <clr-dg-filter [clrDgFilter]="typeFilter">
-      <div class="clr-row">
+      <div class="clr-row" style="max-width: 900px">
         <div class="clr-col-2" *ngFor="let item of skillTypes">
           <clr-checkbox-wrapper>
             <input type="checkbox" clrCheckbox [checked]="dataService.skillFilter.includes(item)" (change)="typeFilter.setValue($event, item)" />
@@ -27,7 +27,7 @@
   </clr-dg-row>
 
   <clr-dg-footer>
-    <clr-dg-pagination #pagination [clrDgPageSize]="10">
+    <clr-dg-pagination #pagination [clrDgPageSize]="20">
       <clr-dg-page-size [clrPageSizeOptions]="[10, 20, 50, 100]">페이지 크기</clr-dg-page-size>
       {{pagination.totalItems}}개 스킬 중 {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}번째
     </clr-dg-pagination>
