@@ -70,6 +70,13 @@ export class SkillNameFilter implements ClrDatagridStringFilterInterface<Skill> 
   }
 }
 
+export class SkillDescFilter implements ClrDatagridStringFilterInterface<Skill> {
+  accepts(a: Skill, search: string): boolean {
+    return "" + a.description === search
+      || a.description.toLowerCase().indexOf(search) >= 0;
+  }
+}
+
 export class SkillTypeFilter implements ClrDatagridFilterInterface<Skill> {
   constructor(
     public dataService: DataService,
@@ -99,6 +106,13 @@ export class AbilityNameFilter implements ClrDatagridStringFilterInterface<Abili
   accepts(a: Ability, search: string): boolean {
     return "" + a.name === search
       || a.name.toLowerCase().indexOf(search) >= 0;
+  }
+}
+
+export class AbilityDescFilter implements ClrDatagridStringFilterInterface<Ability> {
+  accepts(a: Ability, search: string): boolean {
+    return "" + a.description === search
+      || a.description.toLowerCase().indexOf(search) >= 0;
   }
 }
 

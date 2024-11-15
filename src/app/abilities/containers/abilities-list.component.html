@@ -6,6 +6,7 @@
   </clr-dg-column>
   <clr-dg-column [clrDgSortBy]="abilityComparators.sizeComparator">용량</clr-dg-column>
   <clr-dg-column>효과
+    <clr-dg-string-filter [clrDgStringFilter]="descFilter"></clr-dg-string-filter>
   </clr-dg-column>
 
   <clr-dg-row *clrDgItems="let ability of abilityList">

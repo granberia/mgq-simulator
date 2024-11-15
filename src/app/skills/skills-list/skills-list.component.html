@@ -5,6 +5,7 @@
   <clr-dg-column [clrDgSortBy]="skillComparators.typeComparator">분류
   </clr-dg-column>
   <clr-dg-column >효과
+    <clr-dg-string-filter [clrDgStringFilter]="descFilter"></clr-dg-string-filter>
   </clr-dg-column>
 
   <clr-dg-row *clrDgItems="let skill of skillList">

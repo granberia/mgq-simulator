@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { DataService } from '../../shared/data.service';
 import { CalculateService } from '../../shared/calculate.service';
 import { Skill, SkillType } from '../../shared/types/skills';
-import { SkillNameFilter, SkillTypeFilter } from '../../shared/utils/filter';
+import { SkillDescFilter, SkillNameFilter, SkillTypeFilter } from '../../shared/utils/filter';
 import { SkillComparators } from '../../shared/utils/comparator';
 
 @Component({
@@ -12,6 +12,7 @@ import { SkillComparators } from '../../shared/utils/comparator';
 
 export class SkillsListComponent implements OnInit {
   nameFilter = new SkillNameFilter();
+  descFilter = new SkillDescFilter();
   typeFilter = new SkillTypeFilter(this.dataService);
   skillComparators = SkillComparators;
 

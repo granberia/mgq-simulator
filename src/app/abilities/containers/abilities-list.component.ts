@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { DataService } from '../../shared/data.service';
 import { CalculateService } from '../../shared/calculate.service';
 import { Ability, AbilityType } from '../../shared/types/abilities';
-import { AbilityNameFilter, AbilityTypeFilter } from '../../shared/utils/filter';
+import { AbilityDescFilter, AbilityNameFilter, AbilityTypeFilter } from '../../shared/utils/filter';
 import { AbilityComparators } from '../../shared/utils/comparator';
 
 @Component({
@@ -12,6 +12,7 @@ import { AbilityComparators } from '../../shared/utils/comparator';
 
 export class AbilitiesListComponent implements OnInit {
   nameFilter = new AbilityNameFilter();
+  descFilter = new AbilityDescFilter();
   typeFilter = new AbilityTypeFilter(this.dataService);
   abilityComparators = AbilityComparators;
 
