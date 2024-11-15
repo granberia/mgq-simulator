@@ -5,7 +5,7 @@ import { JOB_LIST } from './database/jobsDataBase';
 import { SKILL_LIST } from './database/skillsDataBase';
 import { ABILITY_LIST } from './database/abilitiesDataBase';
 import { BaseRace, Race, RaceType } from './types/races';
-import { InitRace } from './types/actors';
+import { Actor, InitRace } from './types/actors';
 import { RACE_LIST } from './database/racesDataBase';
 import { ACTOR_LIST } from './database/actorsDataBase';
 import { WEAPON_LIST } from './database/weaponsDataBase';
@@ -14,31 +14,72 @@ import { ACCESSORY_LIST } from './database/accessoriesDataBase';
 import { Weapon } from './types/weapons';
 import { Armor } from './types/armors';
 import { SkillType } from './types/skills';
+import { Job } from './types/jobs';
+import { Accessory } from './types/accessories';
 
 
 
 @Injectable()
 export class DataService {
+  actors: Actor[] = [];
   actorRaceCount: { [key: string]: number } = {};
   actorRaceFilter: BaseRace[] = [];
-  raceCount = {};
+  jobs: Job[] = [];
+  races: Race[] = [];
+  raceCount: { [key: string]: number } = {};
   raceFilter: BaseRace[] = [];
   artistFilter: string[] = [];
+  weapons: Weapon[] = [];
   weaponFilter: string[] = [];
+  armors: Armor[] = [];
   armorFilter: string[] = [];
+  accessories: Accessory[] = [];
   skillFilter: string[] = [];
   abilityFilter: string[] = [];
 
-  constructor() { }
-
-  getAllActors() {
+  constructor() {
     this.actorRaceCount = {};
     for (let key in RaceType) {
       this.actorRaceCount[RaceType[key]] = 0;
     }
-    let result = ACTOR_LIST.map(actor => this.setupDefaultActorValues(actor));
+    this.actors = ACTOR_LIST.map(actor => this.setupDefaultActorValues(actor));
+    this.jobs = JOB_LIST.map(job => this.setupDefaultValues(job));
+    for (let key in RaceType) {
+      this.raceCount[RaceType[key]] = 0;
+    }
+    this.races = RACE_LIST.map(race => {
+      this.getRaceTypes(race).forEach(type => {
+        this.raceCount[type]++;
+      });
+      return this.setupDefaultValues(race);
+    });
+    this.weapons = WEAPON_LIST.map(weapon => this.setupDefaultValues(weapon));
+    this.weapons = this.weapons.map(weapon => {
+      return {
+        ...weapon,
+        displaySpecialStat: this.setSpecialStats(weapon),
+      }
+    });
+    this.armors = ARMOR_LIST.map(armor => this.setupDefaultValues(armor));
+    this.armors = this.armors.map(armor => {
+      return {
+        ...armor,
+        displaySpecialStat: this.setSpecialStats(armor),
+      }
+    });
+    this.accessories = ACCESSORY_LIST.map(accessory => this.setupDefaultValues(accessory));
+    this.accessories = this.accessories.map(accessory => {
+      return {
+        ...accessory,
+        displaySpecialStat: this.setSpecialStats(accessory),
+      }
+    });
+  }
+
+  getAllActors() {
+    let actors = this.actors;
     if (this.actorRaceFilter.length != 0) {
-      result = ACTOR_LIST.filter(actor => {
+      actors = actors.filter(actor => {
         let flag = false;
         this.actorRaceFilter.forEach(race => {
           if (actor.baseRaces!.includes(race)) {
@@ -50,38 +91,29 @@ export class DataService {
     }
     return {
       total: this.actorRaceCount,
-      actors: result,
+      actors,
     };
   }
 
-  getOneActor(id: string) {
-    return this.setupDefaultActorValues(ACTOR_LIST.find(actor => actor.id === id));
+  getOneActor(id: string): Actor {
+    return this.actors.find(actor => actor.id === id)!;
   }
 
   getAllJobs() {
     return {
       total: [],
-      jobs: JOB_LIST.map(job => this.setupDefaultValues(job)),
+      jobs: this.jobs,
     };
   }
 
-  getOneJob(id: string) {
-    return this.setupDefaultValues(JOB_LIST.find(job => job.id === id));
+  getOneJob(id: string): Job {
+    return this.jobs.find(job => job.id === id)!;
   }
 
   getAllRaces() {
-    const total: { [key: string]: number } = {};
-    for (let key in RaceType) {
-      total[RaceType[key]] = 0;
-    }
-    let races = RACE_LIST.map(race => {
-      this.getRaceTypes(race).forEach(type => {
-        total[type]++;
-      });
-      return this.setupDefaultValues(race);
-    });
+    let races = this.races;
     if (this.raceFilter.length !== 0) {
-      races = RACE_LIST.filter(race => {
+      races = races.filter(race => {
         let flag = false;
         this.raceFilter.forEach(filterRace => {
           if (this.getRaceTypes(race).indexOf(filterRace) !== -1) {
@@ -92,67 +124,46 @@ export class DataService {
       });
     }
     return {
-      total,
+      total: this.raceCount,
       races,
     };
   }
 
   getOneRace(id: string) {
-    return this.setupDefaultValues(RACE_LIST.find(race => race.id === id));
+    return this.races.find(race => race.id === id)!;
   }
 
   getAllWeapons() {
-    let result = WEAPON_LIST.map(weapon => this.setupDefaultValues(weapon));
-    result = result.map(weapon => {
-      return {
-        ...weapon,
-        displaySpecialStat: this.setSpecialStats(weapon),
-      }
-    });
     return {
       total: [],
-      weapons: result,
+      weapons: this.weapons,
     };
   }
 
   getOneWeapon(id: string) {
-    return this.setupDefaultValues(WEAPON_LIST.find(weapon => weapon.id === id));
+    return this.weapons.find(weapon => weapon.id === id);
   }
 
   getAllArmors() {
-    let result = ARMOR_LIST.map(armor => this.setupDefaultValues(armor));
-    result = result.map(armor => {
-      return {
-        ...armor,
-        displaySpecialStat: this.setSpecialStats(armor),
-      }
-    });
     return {
       total: [],
-      armors: result,
+      armors: this.armors,
     };
   }
 
   getOneArmor(id: string) {
-    return this.setupDefaultValues(ARMOR_LIST.find(armor => armor.id === id));
+    return this.armors.find(armor => armor.id === id);
   }
 
   getAllAccessories() {
-    let result = ACCESSORY_LIST.map(accessory => this.setupDefaultValues(accessory));
-    result = result.map(accessory => {
-      return {
-        ...accessory,
-        displaySpecialStat: this.setSpecialStats(accessory),
-      }
-    });
     return {
       total: [],
-      accessories: result,
+      accessories: this.accessories,
     };
   }
 
   getOneAccessory(id: string) {
-    return this.setupDefaultValues(ACCESSORY_LIST.find(accessory => accessory.id === id));
+    return this.accessories.find(accessory => accessory.id === id);
   }
 
   getOneAbilityOrSkill(id: string) {
@@ -162,7 +173,7 @@ export class DataService {
 
   setupDefaultActorValues(target: any) { // interface 를 정의할 때 기본값 설정이 불가능하자 사용한 수단
     target.baseRaces = [];
-    const initRaceIds = target.initRace.map((race: InitRace) => race.id);
+    const initRaceIds = target.initRace.filter((race: InitRace) => +race.id < 371).map((race: InitRace) => race.id);
     RACE_LIST.forEach((race) => {
       if (initRaceIds.indexOf(race.id) !== -1) {
         const raceTypes = this.getRaceTypes(race);
@@ -276,7 +287,7 @@ export class DataService {
     if (index >= 354 && index < 362) {
       return ['키메라'];
     }
-    if (index >= 362) {
+    if (index >= 362 && index < 371) {
       return ['천사'];
     }
     return [];
