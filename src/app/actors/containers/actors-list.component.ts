@@ -36,7 +36,7 @@ export class ActorsListComponent implements OnInit {
     }
     const data = this.dataService.getAllActors();
     this.actorList = data.actors;
-    this.artistList = Array.from(new Set(data.actors.map(item => item.artist)));
+    this.artistList = Array.from(new Set(data.actors.map(item => item.artist))).filter(name => name !== "しいずぴぃ");
     this.total = data.total;
   }
 
