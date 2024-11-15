@@ -2,6 +2,7 @@ import { Common } from './common';
 
 export interface Race extends Common {
   require: string[];
+  subrequire?: string[];
   baseRace?: BaseRace;
 }
 

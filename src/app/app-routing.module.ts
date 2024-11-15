@@ -30,8 +30,8 @@ const routes: Routes = [
   { path: 'accessories', component: AccessoriesListComponent },
   { path: 'skills', component: SkillsListComponent },
   { path: 'abilities', component: AbilitiesListComponent },
-  { path: '', redirectTo: 'main', pathMatch: 'full' },
-  { path: '**', redirectTo: 'main' },
+  { path: '', redirectTo: 'actors', pathMatch: 'full' },
+  { path: '**', redirectTo: 'actors' },
 ];
 
 @NgModule({

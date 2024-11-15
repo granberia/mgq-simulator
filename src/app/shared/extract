@@ -885,6 +885,23 @@ def extract_mgq_job(file, i)
     temp = temp + '],'
     set_data(file, temp, true)
 
+    ## 선택 직업 정규식
+    temp = 'subrequire: ['
+    cnt = 0
+    class_data[i].note.each_line do |line|
+      if /<選択経験職\s?((?:\d+\-\d+(?:\,\s?)?)+)>/i.match(line)
+        $1.scan(/(\d+)\-(\d+)/){|a, b|
+          if cnt != 0
+            temp = temp + ', '
+          end
+          temp = temp + '\'' + a.to_s + '\''
+          cnt = cnt + 1
+        }
+      end
+    end
+    temp = temp + '],'
+    set_data(file, temp, true)
+
     ## addSkill
     temp = 'addSkill: ['
     cnt = 0
@@ -1702,7 +1719,7 @@ def extract_database
 	$cnt = 1
   file = File.open(Extractor::DATABASE, "w")
   put_start_block(file)
-  extract_actor_ace_equip(file) if $project_version == 1
+  extract_actor_ace_race(file) if $project_version == 1
 #  extract_actor(file) if $project_version != 1
 #  extract_class(file)
 #  extract_skill(file)
