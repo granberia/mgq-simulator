@@ -89,7 +89,7 @@ def extract_actor_ace_equip(file)
   #set_data(file, 'export const ARMOR_LIST: Armor[] = [')
   #set_data(file, 'import { Accessory } from "../types/accessories";')
   #set_data(file, 'export const ACCESSORY_LIST: Accessory[] = [')
-  for i in 1...1850 # weapon
+  for i in 1...1000 # weapon
   #for i in 1...999 # armor
   #for i in 1001...1771 # accessory
     target = datas[i]
