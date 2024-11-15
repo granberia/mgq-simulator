@@ -11,7 +11,7 @@ export class CalculateService {
       'width': '96px',
       'height': '96px',
       'object-fit': 'none',
-      'object-position': '-' + (0) + 'px -' + (0) + 'px',
+      'object-position': '-' + (id % 4 * 96) + 'px -' + (Math.floor(id / 4) * 96) + 'px',
       'transform': 'scale(0.333)',
     }
   }
