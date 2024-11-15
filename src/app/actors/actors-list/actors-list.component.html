@@ -25,8 +25,10 @@
   <clr-dg-column [clrDgSortBy]="actorComparators.lukComparator">손재주</clr-dg-column>
 
   <clr-dg-row *clrDgItems="let actor of actorList">
-    <clr-dg-cell style="padding: 1px; cursor: pointer" (click)="viewDetail(actor)">
-      <img src="assets/faces/{{ actor?.face }}.png" [ngStyle]="calculateService.calculateFaceStyle(+actor.faceIndex)"> {{ actor.name }}
+    <clr-dg-cell style="padding: 1px; cursor: pointer; display: flex; flex-direction: row; align-items: center;" (click)="viewDetail(actor)">
+      <div style="max-width: 32px; max-height: '32px'; display: flex">
+        <img src="assets/faces/{{ actor?.face }}.png" [ngStyle]="calculateService.calculateFaceStyle(+actor.faceIndex)">
+      </div>{{ actor.name }}
     </clr-dg-cell>
     <ng-container *ngFor="let item of columns">
       <clr-dg-cell style="cursor: pointer" (click)="viewDetail(actor)">{{ actor[item] }}</clr-dg-cell>

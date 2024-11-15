@@ -7,10 +7,12 @@ export class CalculateService {
 
   calculateFaceStyle(id: number) {
     return {
-      'width': '32px',
-      'height': '32px',
+      'margin': '-32px',
+      'width': '96px',
+      'height': '96px',
       'object-fit': 'none',
-      'object-position': '-' + (32) + 'px -' + (32) + 'px',
+      'object-position': '-' + (0) + 'px -' + (0) + 'px',
+      'transform': 'scale(0.333)',
     }
   }
 
