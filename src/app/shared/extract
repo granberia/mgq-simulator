@@ -60,6 +60,22 @@ def extract_actor_ace(file)
           end
         end
 
+        if extract == 'skill' # if skill
+          ## goldCost
+          target.note.each_line do |line|
+            if /<消費金額\s?(\d+)>/i.match(line)
+              set_data(file, 'goldCost: '+ $1.to_f.round.to_s + ',', true)
+            end
+          end
+
+          ## hpCost
+          target.note.each_line do |line|
+            if /<消費HP\s?(\d+)%>/i.match(line)
+              set_data(file, 'hpCost: '+ $1.to_f.round.to_s + ',', true)
+            end
+          end
+        end
+
 
         if extract == 'ability' # if Ability
           ## size
@@ -1719,7 +1735,7 @@ def extract_database
 	$cnt = 1
   file = File.open(Extractor::DATABASE, "w")
   put_start_block(file)
-  extract_actor_ace_race(file) if $project_version == 1
+  extract_actor_ace(file) if $project_version == 1
 #  extract_actor(file) if $project_version != 1
 #  extract_class(file)
 #  extract_skill(file)

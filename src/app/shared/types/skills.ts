@@ -15,6 +15,8 @@ export interface Skill {
   element?: number;
   fomula?: string;
   canCritical?: boolean;
+  goldCost?: number;
+  hpCost?: number;
 }
 
 export const SkillType: { [key: string]: string } = {
@@ -82,4 +84,8 @@ export const SkillType: { [key: string]: string } = {
   '62': '브레스',
   '63': '특기',
   '64': '장비 무기',
+  '67': '사이코',
+  '68': '요술',
+  '69': '거체 기술',
+  '70': '카오스',
 };
