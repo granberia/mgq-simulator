@@ -15,8 +15,19 @@
       <div class="status clr-col-2">
         <b>일러스트</b>
       </div>
-      <div class="status clr-col-10" *ngIf="actor">
+      <div class="status clr-col-10">
         {{ actor.artist }}
+      </div>
+      <div class="status clr-col-2">
+        <b>고유 어빌리티</b>
+      </div>
+      <div class="status clr-col-10">
+        {{ description[actor.id][0] }}
+      </div>
+      <div class="status clr-col-12">
+        <ng-container *ngFor="let item of description[actor.id].slice(1, description[actor.id].length - 1)">
+          {{ item }}<br>
+        </ng-container>
       </div>
       <div class="status clr-col-2">
         <b>최대 HP</b>

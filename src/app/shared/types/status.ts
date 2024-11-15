@@ -54,7 +54,7 @@ export interface StateOnHit {
   incontinence?: number; // 실금
 }
 
-export const StatusList = [
+export const StatusList: Array<keyof StateResist> = [
   'death',
   'ascension',
   'climax',

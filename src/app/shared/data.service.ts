@@ -8,6 +8,12 @@ import { BaseRace, RaceType } from './types/races';
 import { InitRace } from './types/actors';
 import { RACE_LIST } from './database/racesDataBase';
 import { ACTOR_LIST } from './database/actorsDataBase';
+import { WEAPON_LIST } from './database/weaponsDataBase';
+import { ARMOR_LIST } from './database/armorsDataBase';
+import { ACCESSORY_LIST } from './database/accessoriesDataBase';
+import { Weapon } from './types/weapons';
+import { Armor } from './types/armors';
+import { SkillType } from './types/skills';
 
 
 
@@ -91,6 +97,60 @@ export class DataService {
 
   getOneRace(id: string) {
     return this.setupDefaultValues(RACE_LIST.find(race => race.id === id));
+  }
+
+  getAllWeapons() {
+    let result = WEAPON_LIST.map(weapon => this.setupDefaultValues(weapon));
+    result = result.map(weapon => {
+      return {
+        ...weapon,
+        displaySpecialStat: this.setSpecialStats(weapon),
+      }
+    });
+    return {
+      total: [],
+      weapons: result,
+    };
+  }
+
+  getOneWeapon(id: string) {
+    return this.setupDefaultValues(WEAPON_LIST.find(weapon => weapon.id === id));
+  }
+
+  getAllArmors() {
+    let result = ARMOR_LIST.map(armor => this.setupDefaultValues(armor));
+    result = result.map(armor => {
+      return {
+        ...armor,
+        displaySpecialStat: this.setSpecialStats(armor),
+      }
+    });
+    return {
+      total: [],
+      armors: result,
+    };
+  }
+
+  getOneArmor(id: string) {
+    return this.setupDefaultValues(ARMOR_LIST.find(armor => armor.id === id));
+  }
+
+  getAllAccessories() {
+    let result = ACCESSORY_LIST.map(accessory => this.setupDefaultValues(accessory));
+    result = result.map(accessory => {
+      return {
+        ...accessory,
+        displaySpecialStat: this.setSpecialStats(accessory),
+      }
+    });
+    return {
+      total: [],
+      accessories: result,
+    };
+  }
+
+  getOneAccessory(id: string) {
+    return this.setupDefaultValues(ACCESSORY_LIST.find(accessory => accessory.id === id));
   }
 
   getOneAbilityOrSkill(id: string) {
@@ -232,5 +292,33 @@ export class DataService {
       total: [],
       abilities: result,
     };
+  }
+
+  setSpecialStats(target: Weapon | Armor) {
+    let result = '';
+    for (let i = 0; i < ElementList.length; i++) {
+      if (target.elementPower![ElementList[i]]) {
+        result = result + ElementListKor[i] + '강화 ' + target.elementPower![ElementList[i]] + '% ';
+      }
+    }
+    for (let i = 0; i < ElementList.length; i++) {
+      if (target.elementResist![ElementList[i]] && target.elementResist![ElementList[i]] !== 100) {
+        result = result + ElementListKor[i] + '내성 ' + target.elementResist![ElementList[i]] + '% ';
+      }
+    }
+    for (let i = 0; i < target.skillPower!.length; i++) {
+      result = result + SkillType[target.skillPower![i].id] + '강화 ' + target.skillPower![i].power + '% ';
+    }
+    for (let i = 0; i < StatusList.length; i++) {
+      if (target.stateOnHit![StatusList[i]]) {
+        result = result + StatusListKor[i] + '부여 ' + target.stateOnHit![StatusList[i]] + '% ';
+      }
+    }
+    for (let i = 0; i < StatusList.length; i++) {
+      if (target.stateResist![StatusList[i]] && target.stateResist![StatusList[i]] !== 100) {
+        result = result + StatusListKor[i] + '내성 ' + target.stateResist![StatusList[i]] + '% ';
+      }
+    }
+    return result;
   }
 }

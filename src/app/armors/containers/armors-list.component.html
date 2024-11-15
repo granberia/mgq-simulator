@@ -1,0 +1,47 @@
+<clr-datagrid>
+  <clr-dg-column [clrDgSortBy]="armorComparators.nameComparator">이름
+    <clr-dg-string-filter [clrDgStringFilter]="nameFilter"></clr-dg-string-filter>
+  </clr-dg-column>
+  <clr-dg-column [clrDgSortBy]="armorComparators.typeComparator">분류
+    <clr-dg-filter [clrDgFilter]="typeFilter">
+      <div class="clr-row" style="max-width: 450px">
+        <div class="clr-col-4" *ngFor="let item of armorTypes">
+          <clr-checkbox-wrapper>
+            <input type="checkbox" clrCheckbox [checked]="dataService.armorFilter.includes(item)" (change)="typeFilter.setValue($event, item)" />
+            <label>{{ item }}</label>
+          </clr-checkbox-wrapper>
+        </div>
+      </div>
+    </clr-dg-filter>
+  </clr-dg-column>
+  <clr-dg-column [clrDgSortBy]="armorComparators.atkComparator">공격력</clr-dg-column>
+  <clr-dg-column [clrDgSortBy]="armorComparators.defComparator">방어력</clr-dg-column>
+  <clr-dg-column [clrDgSortBy]="armorComparators.matComparator">마력</clr-dg-column>
+  <clr-dg-column [clrDgSortBy]="armorComparators.mdfComparator">정신력</clr-dg-column>
+  <clr-dg-column [clrDgSortBy]="armorComparators.agiComparator">민첩성</clr-dg-column>
+  <clr-dg-column [clrDgSortBy]="armorComparators.lukComparator">손재주</clr-dg-column>
+  <clr-dg-column>설명
+    <clr-dg-string-filter [clrDgStringFilter]="descFilter"></clr-dg-string-filter>
+  </clr-dg-column>
+  <clr-dg-column [clrDgSortBy]="armorComparators.specialStatComparator">부가 효과
+    <clr-dg-string-filter [clrDgStringFilter]="specialStatFilter"></clr-dg-string-filter>
+  </clr-dg-column>
+
+  <clr-dg-row *clrDgItems="let armor of armorList">
+    <clr-dg-cell style="padding: 6px; cursor: pointer" (click)="viewDetail(armor)">
+      <img src="assets/icons/iconset.png" [ngStyle]="calculateService.calculateStyle(armor.icon)"> {{ armor.name }}
+    </clr-dg-cell>
+    <clr-dg-cell style="cursor: pointer" (click)="viewDetail(armor)">{{ armorType[armor.type] }}</clr-dg-cell>
+    <ng-container *ngFor="let item of columns">
+      <clr-dg-cell style="cursor: pointer" (click)="viewDetail(armor)">{{ armor[item] }}</clr-dg-cell>
+    </ng-container>
+    <clr-dg-cell style="cursor: pointer" (click)="viewDetail(armor)">{{ armor.displaySpecialStat }}</clr-dg-cell>
+  </clr-dg-row>
+
+  <clr-dg-footer>
+    <clr-dg-pagination #pagination [clrDgPageSize]="20">
+      <clr-dg-page-size [clrPageSizeOptions]="[10, 20, 50, 100]">페이지 크기</clr-dg-page-size>
+      {{pagination.totalItems}}개 방어구 중 {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}번째
+    </clr-dg-pagination>
+  </clr-dg-footer>
+</clr-datagrid>

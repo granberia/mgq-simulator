@@ -4,6 +4,9 @@ import { Race } from '../types/races';
 import { Actor } from '../types/actors';
 import { Skill, SkillType } from '../types/skills';
 import { Ability, AbilityType } from '../types/abilities';
+import { Weapon, WeaponType } from '../types/weapons';
+import { Armor, ArmorType } from '../types/armors';
+import { Accessory } from '../types/accessories';
 
 
 
@@ -319,6 +322,180 @@ export const ActorComparators = {
   mdfComparator: new ActorMdfComparator(),
   agiComparator: new ActorAgiComparator(),
   lukComparator: new ActorLukComparator(),
+};
+
+
+export class SpecialStatComparator implements ClrDatagridComparatorInterface<Weapon | Armor> {
+  compare(a: Weapon | Armor, b: Weapon | Armor) {
+    return a.displaySpecialStat! < b.displaySpecialStat! ? 1 : -1;
+  }
+}
+
+export class WeaponNameComparator implements ClrDatagridComparatorInterface<Weapon> {
+  compare(a: Weapon, b: Weapon) {
+    return a.name < b.name ? 1 : -1;
+  }
+}
+
+export class WeaponTypeComparator implements ClrDatagridComparatorInterface<Weapon> {
+  compare(a: Weapon, b: Weapon) {
+    return WeaponType[a.type] < WeaponType[b.type] ? 1 : -1;
+  }
+}
+
+export class WeaponAtkComparator implements ClrDatagridComparatorInterface<Weapon> {
+  compare(a: Weapon, b: Weapon) {
+    if (a.atkAdd === b.atkAdd) {
+      return a.name < b.name ? 1 : -1;
+    }
+    return a.atkAdd - b.atkAdd;
+  }
+}
+
+export class WeaponDefComparator implements ClrDatagridComparatorInterface<Weapon> {
+  compare(a: Weapon, b: Weapon) {
+    if (a.defAdd === b.defAdd) {
+      return a.name < b.name ? 1 : -1;
+    }
+    return a.defAdd - b.defAdd;
+  }
+}
+
+export class WeaponMatComparator implements ClrDatagridComparatorInterface<Weapon> {
+  compare(a: Weapon, b: Weapon) {
+    if (a.matAdd === b.matAdd) {
+      return a.name < b.name ? 1 : -1;
+    }
+    return a.matAdd - b.matAdd;
+  }
+}
+
+export class WeaponMdfComparator implements ClrDatagridComparatorInterface<Weapon> {
+  compare(a: Weapon, b: Weapon) {
+    if (a.mdfAdd === b.mdfAdd) {
+      return a.name < b.name ? 1 : -1;
+    }
+    return a.mdfAdd - b.mdfAdd;
+  }
+}
+
+export class WeaponAgiComparator implements ClrDatagridComparatorInterface<Weapon> {
+  compare(a: Weapon, b: Weapon) {
+    if (a.agiAdd === b.agiAdd) {
+      return a.name < b.name ? 1 : -1;
+    }
+    return a.agiAdd - b.agiAdd;
+  }
+}
+
+export class WeaponLukComparator implements ClrDatagridComparatorInterface<Weapon> {
+  compare(a: Weapon, b: Weapon) {
+    if (a.lukAdd === b.lukAdd) {
+      return a.name < b.name ? 1 : -1;
+    }
+    return a.lukAdd - b.lukAdd;
+  }
+}
+
+export const WeaponComparators = {
+  nameComparator: new WeaponNameComparator(),
+  typeComparator: new WeaponTypeComparator(),
+  atkComparator: new WeaponAtkComparator(),
+  defComparator: new WeaponDefComparator(),
+  matComparator: new WeaponMatComparator(),
+  mdfComparator: new WeaponMdfComparator(),
+  agiComparator: new WeaponAgiComparator(),
+  lukComparator: new WeaponLukComparator(),
+  specialStatComparator: new SpecialStatComparator(),
+};
+
+export class ArmorNameComparator implements ClrDatagridComparatorInterface<Armor> {
+  compare(a: Armor, b: Armor) {
+    return a.name < b.name ? 1 : -1;
+  }
+}
+
+export class ArmorTypeComparator implements ClrDatagridComparatorInterface<Armor> {
+  compare(a: Armor, b: Armor) {
+    return ArmorType[a.type] < ArmorType[b.type] ? 1 : -1;
+  }
+}
+
+export class ArmorAtkComparator implements ClrDatagridComparatorInterface<Armor> {
+  compare(a: Armor, b: Armor) {
+    if (a.atkAdd === b.atkAdd) {
+      return a.name < b.name ? 1 : -1;
+    }
+    return a.atkAdd - b.atkAdd;
+  }
+}
+
+export class ArmorDefComparator implements ClrDatagridComparatorInterface<Armor> {
+  compare(a: Armor, b: Armor) {
+    if (a.defAdd === b.defAdd) {
+      return a.name < b.name ? 1 : -1;
+    }
+    return a.defAdd - b.defAdd;
+  }
+}
+
+export class ArmorMatComparator implements ClrDatagridComparatorInterface<Armor> {
+  compare(a: Armor, b: Armor) {
+    if (a.matAdd === b.matAdd) {
+      return a.name < b.name ? 1 : -1;
+    }
+    return a.matAdd - b.matAdd;
+  }
+}
+
+export class ArmorMdfComparator implements ClrDatagridComparatorInterface<Armor> {
+  compare(a: Armor, b: Armor) {
+    if (a.mdfAdd === b.mdfAdd) {
+      return a.name < b.name ? 1 : -1;
+    }
+    return a.mdfAdd - b.mdfAdd;
+  }
+}
+
+export class ArmorAgiComparator implements ClrDatagridComparatorInterface<Armor> {
+  compare(a: Armor, b: Armor) {
+    if (a.agiAdd === b.agiAdd) {
+      return a.name < b.name ? 1 : -1;
+    }
+    return a.agiAdd - b.agiAdd;
+  }
+}
+
+export class ArmorLukComparator implements ClrDatagridComparatorInterface<Armor> {
+  compare(a: Armor, b: Armor) {
+    if (a.lukAdd === b.lukAdd) {
+      return a.name < b.name ? 1 : -1;
+    }
+    return a.lukAdd - b.lukAdd;
+  }
+}
+
+export const ArmorComparators = {
+  nameComparator: new ArmorNameComparator(),
+  typeComparator: new ArmorTypeComparator(),
+  atkComparator: new ArmorAtkComparator(),
+  defComparator: new ArmorDefComparator(),
+  matComparator: new ArmorMatComparator(),
+  mdfComparator: new ArmorMdfComparator(),
+  agiComparator: new ArmorAgiComparator(),
+  lukComparator: new ArmorLukComparator(),
+  specialStatComparator: new SpecialStatComparator(),
+};
+
+export class AccessoryNameComparator implements ClrDatagridComparatorInterface<Accessory> {
+  compare(a: Accessory, b: Accessory) {
+    return a.name < b.name ? 1 : -1;
+  }
+}
+
+export const AccessoryComparators = {
+  nameComparator: new ArmorNameComparator(),
+  specialStatComparator: new SpecialStatComparator(),
 };
 
 export class SkillNameComparator implements ClrDatagridComparatorInterface<Skill> {

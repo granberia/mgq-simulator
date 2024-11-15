@@ -49,7 +49,7 @@ export interface ElementPower {
   heal?: number; // 회복
 }
 
-export const ElementList = [
+export const ElementList: Array<keyof ElementPower> = [
   'physical',
   'pleasure',
   'fire',

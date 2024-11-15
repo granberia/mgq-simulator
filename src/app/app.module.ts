@@ -11,6 +11,9 @@ import { RacesModule } from './races/races.module';
 import { ActorsModule } from './actors/actors.module';
 import { SkillsModule } from './skills/skills.module';
 import { AbilitiesModule } from './abilities/abilities.module';
+import { WeaponsModule } from './weapons/weapons.module';
+import { ArmorsModule } from './armors/armors.module';
+import { AccessoriesModule } from './accessories/accessories.module';
 
 @NgModule({
   declarations: [
@@ -27,6 +30,9 @@ import { AbilitiesModule } from './abilities/abilities.module';
     ActorsModule,
     SkillsModule,
     AbilitiesModule,
+    WeaponsModule,
+    ArmorsModule,
+    AccessoriesModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

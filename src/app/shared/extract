@@ -81,17 +81,17 @@ end
 #===============================================================================
 
 def extract_actor_ace_equip(file)
-  #datas = get_weapon # weapon
-  datas = get_armor # armor, accessory
-  #set_data(file, 'import { Weapon } from "../types/weapons";')
-  #set_data(file, 'export const WEAPON_LIST: Weapon[] = [')
+  datas = get_weapon # weapon
+  #datas = get_armor # armor, accessory
+  set_data(file, 'import { Weapon } from "../types/weapons";')
+  set_data(file, 'export const WEAPON_LIST: Weapon[] = [')
   #set_data(file, 'import { Armor } from "../types/armors";')
   #set_data(file, 'export const ARMOR_LIST: Armor[] = [')
-  set_data(file, 'import { Accessory } from "../types/accessories";')
-  set_data(file, 'export const ACCESSORY_LIST: Accessory[] = [')
-  #for i in 1...1000 # weapon
-  #for i in 1...349 # armor
-  for i in 1001...1741 # accessory
+  #set_data(file, 'import { Accessory } from "../types/accessories";')
+  #set_data(file, 'export const ACCESSORY_LIST: Accessory[] = [')
+  for i in 1...1850 # weapon
+  #for i in 1...999 # armor
+  #for i in 1001...1771 # accessory
     target = datas[i]
 
     if target.name[0] != '/' && target.name != '***더미' &&  target.name != '**더미' &&  target.name != ''
@@ -1702,7 +1702,7 @@ def extract_database
 	$cnt = 1
   file = File.open(Extractor::DATABASE, "w")
   put_start_block(file)
-  extract_actor_ace_actor(file) if $project_version == 1
+  extract_actor_ace_equip(file) if $project_version == 1
 #  extract_actor(file) if $project_version != 1
 #  extract_class(file)
 #  extract_skill(file)
