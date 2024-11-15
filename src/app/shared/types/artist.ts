@@ -6,6 +6,7 @@ export const ArtistList = [
   "健康クロス",
   "アレキシ",
   "UN_DO",
+  "ぬっぺほふ",
   "海の山",
   "ネコまんま",
   "xelvy",

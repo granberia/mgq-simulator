@@ -13,6 +13,16 @@
     <clr-dg-string-filter [clrDgStringFilter]="secondaryNameFilter"></clr-dg-string-filter>
   </clr-dg-column>
   <clr-dg-column [clrDgSortBy]="actorComparators.artistComparator">일러스트
+    <clr-dg-filter [clrDgFilter]="artistFilter">
+      <div class="clr-row">
+        <div class="clr-col-2" *ngFor="let item of artistList let i = index">
+          <clr-checkbox-wrapper>
+            <input type="checkbox" clrCheckbox [checked]="dataService.artistFilter.includes(item)" (change)="artistFilter.setValue($event, item)" />
+            <label>{{ item }}</label>
+          </clr-checkbox-wrapper>
+        </div>
+      </div>
+    </clr-dg-filter>
   </clr-dg-column>
   <clr-dg-column [clrDgSortBy]="actorComparators.hpComparator">HP</clr-dg-column>
   <clr-dg-column [clrDgSortBy]="actorComparators.mpComparator">MP</clr-dg-column>
@@ -36,7 +46,9 @@
   </clr-dg-row>
 
   <clr-dg-footer>
-    {{pagination.totalItems}}명 동료 중 {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}번째
-    <clr-dg-pagination #pagination [clrDgPageSize]="20"></clr-dg-pagination>
+    <clr-dg-pagination #pagination [clrDgPageSize]="10">
+      <clr-dg-page-size [clrPageSizeOptions]="[10, 20, 50, 100]">페이지 크기</clr-dg-page-size>
+      {{pagination.totalItems}}명 동료 중 {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}번째
+    </clr-dg-pagination>
   </clr-dg-footer>
 </clr-datagrid>

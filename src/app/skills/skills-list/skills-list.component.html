@@ -3,6 +3,16 @@
     <clr-dg-string-filter [clrDgStringFilter]="nameFilter"></clr-dg-string-filter>
   </clr-dg-column>
   <clr-dg-column [clrDgSortBy]="skillComparators.typeComparator">분류
+    <clr-dg-filter [clrDgFilter]="typeFilter">
+      <div class="clr-row">
+        <div class="clr-col-2" *ngFor="let item of skillTypes">
+          <clr-checkbox-wrapper>
+            <input type="checkbox" clrCheckbox [checked]="dataService.skillFilter.includes(item)" (change)="typeFilter.setValue($event, item)" />
+            <label>{{ item }}</label>
+          </clr-checkbox-wrapper>
+        </div>
+      </div>
+    </clr-dg-filter>
   </clr-dg-column>
   <clr-dg-column >효과
     <clr-dg-string-filter [clrDgStringFilter]="descFilter"></clr-dg-string-filter>
@@ -17,7 +27,9 @@
   </clr-dg-row>
 
   <clr-dg-footer>
-    {{pagination.totalItems}}개 스킬 중 {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}번째
-    <clr-dg-pagination #pagination [clrDgPageSize]="20"></clr-dg-pagination>
+    <clr-dg-pagination #pagination [clrDgPageSize]="10">
+      <clr-dg-page-size [clrPageSizeOptions]="[10, 20, 50, 100]">페이지 크기</clr-dg-page-size>
+      {{pagination.totalItems}}개 스킬 중 {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}번째
+    </clr-dg-pagination>
   </clr-dg-footer>
 </clr-datagrid>

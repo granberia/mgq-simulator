@@ -53,7 +53,8 @@ export class ActorArtistFilter implements ClrDatagridFilterInterface<Actor> {
     return this.dataService.artistFilter.length !== 0;
   }
 
-  setValue(value: boolean, artist: string) {
+  setValue(event: any, artist: string) {
+    const value = event.target.checked;
     if (value === true && (!this.dataService.artistFilter.includes(artist))) {
       this.dataService.artistFilter.push(artist);
     } else if (value === false && this.dataService.artistFilter.includes(artist)) {
@@ -92,7 +93,8 @@ export class SkillTypeFilter implements ClrDatagridFilterInterface<Skill> {
     return this.dataService.skillFilter.length !== 0;
   }
 
-  setValue(value: boolean, skill: string) {
+  setValue(event: any, skill: string) {
+    const value = event.target.checked;
     if (value === true && (!this.dataService.skillFilter.includes(skill))) {
       this.dataService.skillFilter.push(skill);
     } else if (value === false && this.dataService.skillFilter.includes(skill)) {
@@ -131,7 +133,8 @@ export class AbilityTypeFilter implements ClrDatagridFilterInterface<Ability> {
     return this.dataService.abilityFilter.length !== 0;
   }
 
-  setValue(value: boolean, ability: string) {
+  setValue(event: any, ability: string) {
+    const value = event.target.checked;
     if (value === true && (!this.dataService.abilityFilter.includes(ability))) {
       this.dataService.abilityFilter.push(ability);
     } else if (value === false && this.dataService.abilityFilter.includes(ability)) {

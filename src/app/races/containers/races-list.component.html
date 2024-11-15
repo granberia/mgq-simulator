@@ -27,7 +27,9 @@
   </clr-dg-row>
 
   <clr-dg-footer>
-    {{pagination.totalItems}}개 종족 중 {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}번째
-    <clr-dg-pagination #pagination [clrDgPageSize]="20"></clr-dg-pagination>
+    <clr-dg-pagination #pagination [clrDgPageSize]="10">
+      <clr-dg-page-size [clrPageSizeOptions]="[10, 20, 50, 100]">페이지 크기</clr-dg-page-size>
+      {{pagination.totalItems}}개 종족 중 {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}번째
+    </clr-dg-pagination>
   </clr-dg-footer>
 </clr-datagrid>
