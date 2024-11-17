@@ -2,8 +2,7 @@
 #===============================================================================
 # ● Extract Actor in VXACE
 #===============================================================================
-def extract_actor_ace(file)
-  extract = 'skill'
+def extract_actor_ace_skill(file, extract)
   datas = get_skill
   temp = ''
   if extract == 'ability'
@@ -14,8 +13,9 @@ def extract_actor_ace(file)
     set_data(file, 'import { Skill } from "../types/skills";') # skill
     set_data(file, 'export const SKILL_LIST: Skill[] = [') # skill
   end
-  for i in 1...10100
-       if (extract == 'ability' && i >= 61 && i <= 862) ||
+  for i in 1...10200
+       if (extract == 'skill' && i >= 3 && i <= 13) ||
+       (extract == 'ability' && i >= 61 && i <= 900) ||
        (extract == 'skill' && i >= 901 && i <= 3180) ||
        (extract == 'ability' && i >= 5621 && i <= 5654) ||
        (extract == 'skill' && i >= 5765 && i <= 6238) ||
@@ -1475,15 +1475,39 @@ def extract_actor_ace_actor(file)
       end
       set_data(file, temp, true)
 
+      ## 습득 스킬 정규식
+      temp = 'learningSkills: ['
+      cnt = 0
+      actor[i].note.each_line do |line|
+        if /<固有習得\s?((?:\d+\-\d+(?:\,\s?)?)+)>/i.match(line)
+          $1.scan(/(\d+)\-(\d+)/){|a, b|
+            if cnt != 0
+              temp = temp + ', '
+            end
+            temp = temp + '{id: \'' + b.to_s + '\', level: ' + a.to_s + '}'
+            cnt = cnt + 1
+          }
+        end
+      end
+      temp = temp + '],'
+      set_data(file, temp, true)
 
       ## artist
+      cnt = 0
       if i == 701 ## 네로
         set_data(file, 'artist: \'しき\',', true)
       end
+      if i == 998 ## 허룡
+        set_data(file, 'artist: \'しき\',', true)
+      end
+      if i == 999 ## 누르코기트
+        set_data(file, 'artist: \'ぬっぺほふ\',', true)
+      end
       if i != 701
         actor[i].note.each_line do |line|
-          if /<イラスト(?:\:|：)(\S+)>/i.match(line)
+          if /<イラスト(?:\:|：)(\S+)>/i.match(line) && cnt == 0
             set_data(file, 'artist: \''+ $1.to_s + '\',', true)
+            cnt = cnt + 1
           end
         end
       end
@@ -1731,32 +1755,33 @@ end
 # ● Extract Base Item
 #===============================================================================
 def extract_database
-  extract = 'fff'
+  # extract = 'actor'
+  # extract = 'race'
+  # extract = 'skill'
+  extract = 'ability'
+  # extract = 'weapon'
+  # extract = 'armor'
+  # extract = 'accessory'
 	$cnt = 1
   file = File.open(Extractor::DATABASE, "w")
   put_start_block(file)
-  extract_actor_ace(file) if $project_version == 1
-#  extract_actor(file) if $project_version != 1
-#  extract_class(file)
-#  extract_skill(file)
-#  extract_skill_message(file) if $project_version != 3
-#  extract_item(file)
-#  extract_weapon(file)
-#  extract_armor(file)
-#  extract_enemy(file)
-#  extract_state(file)
-#  extract_state_message(file) if $project_version != 3
+
+  if extract == 'actor'
+    extract_actor_ace_actor(file)
+  end
+
+  if extract == 'ability'
+    extract_actor_ace_skill(file, extract)
+  end
+
+  if extract == 'skill'
+    extract_actor_ace_skill(file, extract)
+  end
+
+  # extract_actor_ace(file) if $project_version == 1
   put_end_block(file)
   file.close
 
-#~   $cnt = 1
-#~   file = File.open("ExtractedData/Database_Animation&Tileset.txt", "w")
-#~   put_start_block(file)
-#~   extract_animation(file)
-#~   extract_tileset(file) if $project_version != 2
-#~   put_end_block(file)
-#~   file.close
-
   $cnt = 1
-  extract_database_memo if $project_version != 3
+  # extract_database_memo if $project_version != 3
 end

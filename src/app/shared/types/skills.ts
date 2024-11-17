@@ -1,3 +1,4 @@
+import { From } from "./common";
 
 export interface Skill {
   id: string;
@@ -17,9 +18,11 @@ export interface Skill {
   canCritical?: boolean;
   goldCost?: number;
   hpCost?: number;
+  from?: From[];
 }
 
 export const SkillType: { [key: string]: string } = {
+  '0': '없음',
   '1': '전투 어빌리티',
   '2': '직업 어빌리티',
   '3': '마법 어빌리티',

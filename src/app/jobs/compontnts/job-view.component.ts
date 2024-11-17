@@ -23,5 +23,4 @@ export class JobViewComponent implements OnInit {
 
   ngOnInit() {
   }
-
 }

@@ -90,18 +90,24 @@
           <th style="width: 5%">레벨</th>
           <th style="width: 15%" class="left">이름</th>
           <th style="width: 10%" class="left">분류</th>
+          <th style="width: 5%" class="left">비용</th>
           <th style="width: 70%" class="left">효과</th>
         </tr>
       </thead>
       <tbody>
-        <ng-container *ngFor="let item of race.learningSkills">
-          <tr>
-            <td>{{ item.level }}</td>
-            <td class="left" style="padding: 6px"><img src="assets/icons/iconset.png" [ngStyle]="calculateService.calculateStyle(item.skill!.icon)">{{ item.skill!.name }}</td>
-            <td class="left">{{ skillType[item.skill!.type] }}</td>
-            <td class="left">{{ item.skill!.description }}</td>
-          </tr>
-        </ng-container>
+        <tr *ngFor="let item of race.learningSkills">
+          <td>{{ item.level }}</td>
+          <td class="left" style="padding: 6px"><img src="assets/icons/iconset.png" [ngStyle]="calculateService.calculateStyle(item.skill!.icon)">{{ item.skill!.name }}</td>
+          <td class="left">{{ skillType[item.skill!.type] }}</td>
+          <td class="left cost" *ngIf="this.calculateService.getCost(item.skill!) as cost">
+            <div *ngIf="cost['size'] || cost['size'] === 0">{{ cost['size'] }}</div>
+            <div *ngIf="cost['goldCost']" class="gold-cost">{{ cost['goldCost'] }}</div>
+            <div *ngIf="cost['hpCost']" class="hp-cost">{{ cost['hpCost'] }}%</div>
+            <div *ngIf="cost['mpCost']" class="mp-cost">{{ cost['mpCost'] }}</div>
+            <div *ngIf="cost['spCost']" class="sp-cost">{{ cost['spCost'] }}</div>
+          </td>
+          <td class="left">{{ item.skill!.description }}</td>
+        </tr>
       </tbody>
     </table>
   </div>

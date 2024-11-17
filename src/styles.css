@@ -14,3 +14,30 @@
 .datagrid-table .datagrid-column:focus {
   outline: none;
 }
+
+.cost {
+  display: flex;
+  flex-direction: row;
+  gap: 3px;
+}
+
+.gold-cost {
+  color: #ECEE45;
+}
+
+.hp-cost {
+  color: #FF3810;
+}
+
+.mp-cost {
+  color: #36A3D1;
+}
+
+.sp-cost {
+  color: #04C05F;
+}
+
+.detail-title {
+  font-size: 24px;
+  padding: 16px 0;
+}

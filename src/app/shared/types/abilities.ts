@@ -1,3 +1,4 @@
+import { From } from "./common";
 
 export interface Ability {
   id: string;
@@ -6,6 +7,7 @@ export interface Ability {
   type: string;
   icon: number;
   size: number;
+  from?: From[];
 }
 
 export const AbilityType: { [key: string]: string } = {

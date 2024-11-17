@@ -14,7 +14,8 @@
       </div>
     </clr-dg-filter>
   </clr-dg-column>
-  <clr-dg-column >효과
+  <clr-dg-column>비용</clr-dg-column>
+  <clr-dg-column>효과
     <clr-dg-string-filter [clrDgStringFilter]="descFilter"></clr-dg-string-filter>
   </clr-dg-column>
 
@@ -23,6 +24,13 @@
       <img src="assets/icons/iconset.png" [ngStyle]="calculateService.calculateStyle(skill.icon)"> {{ skill.name }}
     </clr-dg-cell>
     <clr-dg-cell style="cursor: pointer" (click)="viewDetail(skill)">{{ skillType[skill.type] }}</clr-dg-cell>
+    <clr-dg-cell class="cost" style="cursor: pointer" (click)="viewDetail(skill)" *ngIf="this.calculateService.getCost(skill) as cost">
+      <div *ngIf="cost['size'] || cost['size'] === 0">{{ cost['size'] }}</div>
+      <div *ngIf="cost['goldCost']" class="gold-cost">{{ cost['goldCost'] }}</div>
+      <div *ngIf="cost['hpCost']" class="hp-cost">{{ cost['hpCost'] }}%</div>
+      <div *ngIf="cost['mpCost']" class="mp-cost">{{ cost['mpCost'] }}</div>
+      <div *ngIf="cost['spCost']" class="sp-cost">{{ cost['spCost'] }}</div>
+    </clr-dg-cell>
     <clr-dg-cell style="cursor: pointer" (click)="viewDetail(skill)">{{ skill.description }}</clr-dg-cell>
   </clr-dg-row>
 

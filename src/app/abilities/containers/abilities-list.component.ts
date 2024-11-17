@@ -1,3 +1,4 @@
+import { ActivatedRoute, Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { DataService } from '../../shared/data.service';
 import { CalculateService } from '../../shared/calculate.service';
@@ -21,6 +22,8 @@ export class AbilitiesListComponent implements OnInit {
   abilityTypes: string[] = [];
 
   constructor(
+    private route: ActivatedRoute,
+    private router: Router,
     public dataService: DataService,
     public calculateService: CalculateService,
   ) { }
@@ -33,7 +36,7 @@ export class AbilitiesListComponent implements OnInit {
   }
 
   viewDetail(ability: Ability) {
-    // this.router.navigate([`./${ability.id}`], { relativeTo: this.route });
+    this.router.navigate([`./${ability.id}`], { relativeTo: this.route });
   }
 }
 

@@ -51,14 +51,24 @@ export interface Equip extends Common {
 
 // 공격시 속성 미구현
 
+export interface LearningSkill {
+  id: string;
+  level: number;
+  skill?: Ability | Skill;
+}
+
+export type Datatype = 'actor' | 'job' | 'race' | 'weapon' | 'armor' | 'accessory';
+
+export interface From {
+  type: Datatype;
+  source: string;
+  level: number;
+}
+
 export interface Common {
   id: string;
   name: string;
-  learningSkills?: {
-    id: string,
-    level: number,
-    skill?: Ability | Skill,
-  }[];
+  learningSkills?: LearningSkill[];
   addSkill?: string[];
   addWeapon?: string[];
   addArmor?: string[];

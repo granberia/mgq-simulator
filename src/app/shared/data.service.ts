@@ -13,11 +13,11 @@ import { ARMOR_LIST } from './database/armorsDataBase';
 import { ACCESSORY_LIST } from './database/accessoriesDataBase';
 import { Weapon } from './types/weapons';
 import { Armor } from './types/armors';
-import { SkillType } from './types/skills';
+import { Skill, SkillType } from './types/skills';
 import { Job } from './types/jobs';
 import { Accessory } from './types/accessories';
-
-
+import { Ability } from './types/abilities';
+import { Datatype, From, LearningSkill } from './types/common';
 
 @Injectable()
 export class DataService {
@@ -34,54 +34,76 @@ export class DataService {
   armors: Armor[] = [];
   armorFilter: string[] = [];
   accessories: Accessory[] = [];
+  skills: Skill[] = [];
   skillFilter: string[] = [];
+  abilities: Ability[] = [];
   abilityFilter: string[] = [];
 
   constructor() {
+    this.skills = SKILL_LIST.map((skill) => {
+      return {
+        ...skill,
+        from: [],
+      };
+    });
+    this.abilities = ABILITY_LIST.map((ability) => {
+      return {
+        ...ability,
+        from: [],
+      };
+    });
+    this.jobs = JOB_LIST.map((job) => this.setupDefaultValues(job, 'job'));
+    for (let key in RaceType) {
+      this.raceCount[RaceType[key]] = 0;
+    }
+    this.races = RACE_LIST.map((race) => {
+      this.getRaceTypes(race).forEach((type) => {
+        this.raceCount[type]++;
+      });
+      return this.setupDefaultValues(race, 'race');
+    });
     this.actorRaceCount = {};
     for (let key in RaceType) {
       this.actorRaceCount[RaceType[key]] = 0;
     }
-    this.actors = ACTOR_LIST.map(actor => this.setupDefaultActorValues(actor));
-    this.jobs = JOB_LIST.map(job => this.setupDefaultValues(job));
-    for (let key in RaceType) {
-      this.raceCount[RaceType[key]] = 0;
-    }
-    this.races = RACE_LIST.map(race => {
-      this.getRaceTypes(race).forEach(type => {
-        this.raceCount[type]++;
-      });
-      return this.setupDefaultValues(race);
-    });
-    this.weapons = WEAPON_LIST.map(weapon => this.setupDefaultValues(weapon));
-    this.weapons = this.weapons.map(weapon => {
+    this.actors = ACTOR_LIST.map((actor) =>
+      this.setupDefaultActorValues(actor)
+    );
+    this.weapons = WEAPON_LIST.map((weapon) =>
+      this.setupDefaultValues(weapon, 'weapon')
+    );
+    this.weapons = this.weapons.map((weapon) => {
       return {
         ...weapon,
         displaySpecialStat: this.setSpecialStats(weapon),
-      }
+      };
     });
-    this.armors = ARMOR_LIST.map(armor => this.setupDefaultValues(armor));
-    this.armors = this.armors.map(armor => {
+    this.armors = ARMOR_LIST.map((armor) =>
+      this.setupDefaultValues(armor, 'armor')
+    );
+    this.armors = this.armors.map((armor) => {
       return {
         ...armor,
         displaySpecialStat: this.setSpecialStats(armor),
-      }
+      };
     });
-    this.accessories = ACCESSORY_LIST.map(accessory => this.setupDefaultValues(accessory));
-    this.accessories = this.accessories.map(accessory => {
+    this.accessories = ACCESSORY_LIST.map((accessory) =>
+      this.setupDefaultValues(accessory, 'accessory')
+    );
+    this.accessories = this.accessories.map((accessory) => {
       return {
         ...accessory,
         displaySpecialStat: this.setSpecialStats(accessory),
-      }
+      };
     });
   }
 
   getAllActors() {
     let actors = this.actors;
     if (this.actorRaceFilter.length != 0) {
-      actors = actors.filter(actor => {
+      actors = actors.filter((actor) => {
         let flag = false;
-        this.actorRaceFilter.forEach(race => {
+        this.actorRaceFilter.forEach((race) => {
           if (actor.baseRaces!.includes(race)) {
             flag = true;
           }
@@ -96,7 +118,7 @@ export class DataService {
   }
 
   getOneActor(id: string): Actor {
-    return this.actors.find(actor => actor.id === id)!;
+    return this.actors.find((actor) => actor.id === id)!;
   }
 
   getAllJobs() {
@@ -107,15 +129,15 @@ export class DataService {
   }
 
   getOneJob(id: string): Job {
-    return this.jobs.find(job => job.id === id)!;
+    return this.jobs.find((job) => job.id === id)!;
   }
 
   getAllRaces() {
     let races = this.races;
     if (this.raceFilter.length !== 0) {
-      races = races.filter(race => {
+      races = races.filter((race) => {
         let flag = false;
-        this.raceFilter.forEach(filterRace => {
+        this.raceFilter.forEach((filterRace) => {
           if (this.getRaceTypes(race).indexOf(filterRace) !== -1) {
             flag = true;
           }
@@ -130,7 +152,7 @@ export class DataService {
   }
 
   getOneRace(id: string) {
-    return this.races.find(race => race.id === id)!;
+    return this.races.find((race) => race.id === id)!;
   }
 
   getAllWeapons() {
@@ -141,7 +163,7 @@ export class DataService {
   }
 
   getOneWeapon(id: string) {
-    return this.weapons.find(weapon => weapon.id === id);
+    return this.weapons.find((weapon) => weapon.id === id);
   }
 
   getAllArmors() {
@@ -152,7 +174,7 @@ export class DataService {
   }
 
   getOneArmor(id: string) {
-    return this.armors.find(armor => armor.id === id);
+    return this.armors.find((armor) => armor.id === id);
   }
 
   getAllAccessories() {
@@ -163,21 +185,48 @@ export class DataService {
   }
 
   getOneAccessory(id: string) {
-    return this.accessories.find(accessory => accessory.id === id);
+    return this.accessories.find((accessory) => accessory.id === id);
   }
 
   getOneAbilityOrSkill(id: string) {
-    const result = ABILITY_LIST.find(ability => ability.id === id);
-    return result ?? SKILL_LIST.find(skill => skill.id === id);
+    return [...this.abilities, ...this.skills].find((skill) => skill.id === id);
   }
 
-  setupDefaultActorValues(target: any) { // interface 를 정의할 때 기본값 설정이 불가능하자 사용한 수단
+  registerFrom(id: string, from: From) {
+    const result = [...this.skills, ...this.abilities].find(
+      (item) => item.id === id
+    );
+    result!.from!.push(from);
+    return result;
+  }
+
+  setupDefaultActorValues(target: any) {
+    // interface 를 정의할 때 기본값 설정이 불가능하자 사용한 수단
+    if (target.learningSkills && target.learningSkills.length !== 0) {
+      target.learningSkills = target.learningSkills
+        .filter(
+          (item: LearningSkill) => item.id !== '1543' && item.id !== '3351'
+        )
+        .map((item: LearningSkill) => {
+          const skill = this.registerFrom(item.id, {
+            type: 'actor',
+            source: target.name,
+            level: item.level,
+          });
+          return {
+            ...item,
+            skill,
+          };
+        });
+    }
     target.baseRaces = [];
-    const initRaceIds = target.initRace.filter((race: InitRace) => +race.id < 371).map((race: InitRace) => race.id);
+    const initRaceIds = target.initRace
+      .filter((race: InitRace) => +race.id < 371)
+      .map((race: InitRace) => race.id);
     RACE_LIST.forEach((race) => {
       if (initRaceIds.indexOf(race.id) !== -1) {
         const raceTypes = this.getRaceTypes(race);
-        raceTypes.forEach(type => {
+        raceTypes.forEach((type) => {
           if (target.baseRaces.indexOf(type) === -1) {
             target.baseRaces.push(type);
             this.actorRaceCount[type]++;
@@ -188,24 +237,36 @@ export class DataService {
     return target;
   }
 
-  setupDefaultValues(target: any) { // interface 를 정의할 때 기본값 설정이 불가능하자 사용한 수단
+  setupDefaultValues(target: any, type: Datatype) {
+    // interface 를 정의할 때 기본값 설정이 불가능하자 사용한 수단
     if (target.learningSkills && target.learningSkills.length !== 0) {
-      target.learningSkills = target.learningSkills.map((item: { id: string; }) => {
-        return {
-          ...item,
-          skill: this.getOneAbilityOrSkill(item.id),
+      target.learningSkills = target.learningSkills.map(
+        (item: LearningSkill) => {
+          const skill = this.registerFrom(item.id, {
+            type,
+            source: target.name,
+            level: item.level,
+          });
+          return {
+            ...item,
+            skill,
+          };
         }
-      });
+      );
     }
     const elementList = ElementList;
     target.elementResist = target.elementResist ? target.elementResist : {};
-    elementList.forEach(element => {
-      target.elementResist[element] = target.elementResist[element] ? target.elementResist[element] : 100;
+    elementList.forEach((element) => {
+      target.elementResist[element] = target.elementResist[element]
+        ? target.elementResist[element]
+        : 100;
     });
     const stateResist = StatusList;
     target.stateResist = target.stateResist ? target.stateResist : {};
-    stateResist.forEach(status => {
-      target.stateResist[status] = target.stateResist[status] ? target.stateResist[status] : 100;
+    stateResist.forEach((status) => {
+      target.stateResist[status] = target.stateResist[status]
+        ? target.stateResist[status]
+        : 100;
     });
     return target;
   }
@@ -213,9 +274,12 @@ export class DataService {
   getRaceTypes(race: Race): BaseRace[] {
     const index = +race.id;
     if (index >= 5000) {
-      return [...race.require, ...(race.subrequire ? race.subrequire : [])].reduce((prev: BaseRace[], req: string) => {
-        const subrace = RACE_LIST.find(race => race.id === req);
-        return [...prev, ...subrace ? this.getRaceTypes(subrace) : []];
+      return [
+        ...race.require,
+        ...(race.subrequire ? race.subrequire : []),
+      ].reduce((prev: BaseRace[], req: string) => {
+        const subrace = RACE_LIST.find((race) => race.id === req);
+        return [...prev, ...(subrace ? this.getRaceTypes(subrace) : [])];
       }, []);
     }
     if (index >= 151 && index < 158) {
@@ -294,18 +358,16 @@ export class DataService {
   }
 
   getAllSkills() {
-    let result = SKILL_LIST;
     return {
       total: [],
-      skills: result,
+      skills: this.skills,
     };
   }
 
   getAllAbilities() {
-    let result = ABILITY_LIST;
     return {
       total: [],
-      abilities: result,
+      abilities: this.abilities,
     };
   }
 
@@ -313,25 +375,56 @@ export class DataService {
     let result = '';
     for (let i = 0; i < ElementList.length; i++) {
       if (target.elementPower![ElementList[i]]) {
-        result = result + ElementListKor[i] + '강화 ' + target.elementPower![ElementList[i]] + '% ';
+        result =
+          result +
+          ElementListKor[i] +
+          '강화 ' +
+          target.elementPower![ElementList[i]] +
+          '% ';
       }
     }
     for (let i = 0; i < ElementList.length; i++) {
-      if (target.elementResist![ElementList[i]] && target.elementResist![ElementList[i]] !== 100) {
-        result = result + ElementListKor[i] + '내성 ' + target.elementResist![ElementList[i]] + '% ';
+      if (
+        target.elementResist![ElementList[i]] &&
+        target.elementResist![ElementList[i]] !== 100
+      ) {
+        result =
+          result +
+          ElementListKor[i] +
+          '내성 ' +
+          target.elementResist![ElementList[i]] +
+          '% ';
       }
     }
     for (let i = 0; i < target.skillPower!.length; i++) {
-      result = result + SkillType[target.skillPower![i].id] + '강화 ' + target.skillPower![i].power + '% ';
+      result =
+        result +
+        SkillType[target.skillPower![i].id] +
+        '강화 ' +
+        target.skillPower![i].power +
+        '% ';
     }
     for (let i = 0; i < StatusList.length; i++) {
       if (target.stateOnHit![StatusList[i]]) {
-        result = result + StatusListKor[i] + '부여 ' + target.stateOnHit![StatusList[i]] + '% ';
+        result =
+          result +
+          StatusListKor[i] +
+          '부여 ' +
+          target.stateOnHit![StatusList[i]] +
+          '% ';
       }
     }
     for (let i = 0; i < StatusList.length; i++) {
-      if (target.stateResist![StatusList[i]] && target.stateResist![StatusList[i]] !== 100) {
-        result = result + StatusListKor[i] + '내성 ' + target.stateResist![StatusList[i]] + '% ';
+      if (
+        target.stateResist![StatusList[i]] &&
+        target.stateResist![StatusList[i]] !== 100
+      ) {
+        result =
+          result +
+          StatusListKor[i] +
+          '내성 ' +
+          target.stateResist![StatusList[i]] +
+          '% ';
       }
     }
     return result;

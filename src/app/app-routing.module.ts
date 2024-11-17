@@ -6,12 +6,14 @@ import { JobsDetailComponent } from './jobs/containers/jobs-detail.component';
 import { RacesListComponent } from './races/containers/races-list.component';
 import { RacesDetailComponent } from './races/containers/races-detail.component';
 import { ActorsListComponent } from './actors/containers/actors-list.component';
-import { SkillsListComponent } from './skills/skills-list/skills-list.component';
+import { SkillsListComponent } from './skills/containers/skills-list.component';
 import { AbilitiesListComponent } from './abilities/containers/abilities-list.component';
 import { ActorsDetailComponent } from './actors/containers/actors-detail.component';
 import { WeaponsListComponent } from './weapons/containers/weapons-list.component';
 import { ArmorsListComponent } from './armors/containers/armors-list.component';
 import { AccessoriesListComponent } from './accessories/containers/accessories-list.component';
+import { SkillsDetailComponent } from './skills/containers/skills-detail.component';
+import { AbilitiesDetailComponent } from './abilities/containers/abilities-detail.component';
 
 const routes: Routes = [
   {
@@ -29,7 +31,9 @@ const routes: Routes = [
   { path: 'armors', component: ArmorsListComponent },
   { path: 'accessories', component: AccessoriesListComponent },
   { path: 'skills', component: SkillsListComponent },
+  { path: 'skills/:id', component: SkillsDetailComponent },
   { path: 'abilities', component: AbilitiesListComponent },
+  { path: 'abilities/:id', component: AbilitiesDetailComponent },
   { path: '', redirectTo: 'actors', pathMatch: 'full' },
   { path: '**', redirectTo: 'actors' },
 ];

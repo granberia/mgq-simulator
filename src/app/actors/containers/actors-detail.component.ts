@@ -5,6 +5,7 @@ import { DataService } from '../../shared/data.service';
 import { Actor } from '../../shared/types/actors';
 import { CalculateService } from '../../shared/calculate.service';
 import { ACTOR_ABILITY_TEXT } from '../../shared/database/actorAbilityDataBase';
+import { SkillType } from '../../shared/types/skills';
 
 @Component({
   selector: 'app-actors-detail',
@@ -12,6 +13,7 @@ import { ACTOR_ABILITY_TEXT } from '../../shared/database/actorAbilityDataBase';
 })
 export class ActorsDetailComponent implements OnInit {
   description = ACTOR_ABILITY_TEXT;
+  skillType: { [key: string]: string } = SkillType;
   actor: Actor;
 
   constructor(
