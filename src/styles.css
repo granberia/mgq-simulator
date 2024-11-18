@@ -53,3 +53,27 @@
 .clickable:hover {
   background-color: var(--clr-datagrid-row-hover-color, hsl(198, 0%, 91%));
 }
+
+.table {
+  margin-top: 12px;
+  margin-bottom: 12px;
+}
+
+tr.clr-row {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.table.table-vertical th:not(:first-child) {
+  border-left-style: solid;
+  border-left-width: .05rem;
+  border-left-width: var(--clr-table-borderwidth, 0.05rem);
+  border-left-color: #ccc;
+  border-left-color: var(--clr-table-border-color, hsl(198, 0%, 80%));
+  border-right-style: solid;
+  border-right-width: .05rem;
+  border-right-width: var(--clr-table-borderwidth, 0.05rem);
+  border-right-color: #ccc;
+  border-right-color: var(--clr-table-border-color, hsl(198, 0%, 80%));
+  font-weight: 600;
+}
