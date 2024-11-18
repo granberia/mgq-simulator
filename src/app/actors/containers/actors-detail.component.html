@@ -4,7 +4,8 @@
       <div class="status clr-col-12">
         <div>
           <div style="max-width: 96px; max-height: '96px'; display: flex">
-            <img src="assets/faces/{{ actor.face }}.png" [ngStyle]="calculateService.calculateFaceDetailStyle(+actor.faceIndex)">
+            <img src="assets/faces/{{ actor.face }}.png"
+              [ngStyle]="calculateService.calculateFaceDetailStyle(+actor.faceIndex)">
           </div>
           <div class="detail-title">{{ actor.name }} ({{ actor.secondaryName }})</div>
         </div>
@@ -26,107 +27,72 @@
           {{ item }}<br>
         </ng-container>
       </div>
+
+
       <div class="status clr-col-12">
         <div class="detail-title">Lv. 60 능력치</div>
       </div>
-      <div class="status clr-col-2">
-        <b>최대 HP</b>
-      </div>
-      <div class="status clr-col-2">
-        {{ actor.hp }}
-      </div>
-      <div class="status clr-col-2">
-        <b>최대 MP</b>
-      </div>
-      <div class="status clr-col-2">
-        {{ actor.mp }}
-      </div>
-      <div class="status clr-col-2">
-        <b>최대 SP</b>
-      </div>
-      <div class="status clr-col-2">
-        {{ actor.sp }}
-      </div>
-      <div class="status clr-col-2">
-        <b>공격력</b>
-      </div>
-      <div class="status clr-col-2">
-        {{ actor.atk }}
-      </div>
-      <div class="status clr-col-2">
-        <b>방어력</b>
-      </div>
-      <div class="status clr-col-2">
-        {{ actor.def }}
-      </div>
-      <div class="status clr-col-2">
-        <b>마력</b>
-      </div>
-      <div class="status clr-col-2">
-        {{ actor.mat }}
-      </div>
-      <div class="status clr-col-2">
-        <b>정신력</b>
-      </div>
-      <div class="status clr-col-2">
-        {{ actor.mdf }}
-      </div>
-      <div class="status clr-col-2">
-        <b>민첩성</b>
-      </div>
-      <div class="status clr-col-2">
-        {{ actor.agi }}
-      </div>
-      <div class="status clr-col-2">
-        <b>손재주</b>
-      </div>
-      <div class="status clr-col-2">
-        {{ actor.luk }}
-      </div>
-      <div class="status clr-col-2">
-        <b>기본 직업</b>
-      </div>
-      <div class="status clr-col-10" *ngIf="actor">
-        {{ dataService.getOneJob(actor.defaultJob).name }}
-      </div>
-      <div class="status clr-col-2">
-        <b>기본 종족</b>
-      </div>
-      <div class="status clr-col-10" *ngIf="actor">
-        {{ dataService.getOneRace(actor.defaultRace).name }}
+
+      <div class="status clr-col-12">
+        <table class="table table-vertical">
+          <tbody>
+            <tr class="clr-row">
+              <th class="clr-col-2">최대 HP</th>
+              <td class="clr-col-2">{{ actor.hp }}</td>
+              <th class="clr-col-2">최대 MP</th>
+              <td class="clr-col-2">{{ actor.mp }}</td>
+              <th class="clr-col-2">최대 SP</th>
+              <td class="clr-col-2">{{ actor.sp }}</td>
+            </tr>
+            <tr class="clr-row">
+              <th class="clr-col-2">공격력</th>
+              <td class="clr-col-2">{{ actor.atk }}</td>
+              <th class="clr-col-2">방어력</th>
+              <td class="clr-col-2">{{ actor.def }}</td>
+              <th class="clr-col-2">마력</th>
+              <td class="clr-col-2">{{ actor.mat }}</td>
+            </tr>
+            <tr class="clr-row">
+              <th class="clr-col-2">정신력</th>
+              <td class="clr-col-2">{{ actor.mdf }}</td>
+              <th class="clr-col-2">민첩성</th>
+              <td class="clr-col-2">{{ actor.agi }}</td>
+              <th class="clr-col-2">손재주</th>
+              <td class="clr-col-2">{{ actor.luk }}</td>
+            </tr>
+            <tr class="clr-row">
+              <th class="clr-col-2">기본 직업</th>
+              <td class="clr-col-10">
+                {{ dataService.getOneJob(actor.defaultJob).name }}
+              </td>
+            </tr>
+            <tr class="clr-row">
+              <th class="clr-col-2">기본 종족</th>
+              <td class="clr-col-10">
+                {{ dataService.getOneRace(actor.defaultRace).name }}
+              </td>
+            </tr>
+            <tr class="clr-row">
+              <th class="clr-col-2">초기 직업</th>
+              <td class="clr-col-10">
+                <ng-container *ngFor="let item of actor.initJob let i = index">
+                  <ng-container *ngIf="i!==0"> / </ng-container>{{ dataService.getOneJob(item.id).name }} Lv {{ item.level }}
+                </ng-container>
+              </td>
+            </tr>
+            <tr class="clr-row">
+              <th class="clr-col-2">초기 종족</th>
+              <td class="clr-col-10">
+                <ng-container *ngFor="let item of actor.initRace let i = index">
+                  <ng-container *ngIf="i!==0"> / </ng-container>{{ dataService.getOneRace(item.id).name }} Lv {{ item.level }}
+                </ng-container>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
-    <div class="clr-row">
-      <div class="status clr-col-2">
-        <b>초기 직업</b>
-      </div>
-      <div class="status clr-col-10" style="margin-top: 0px">
-        <div class="clr-row">
-          <ng-container *ngFor="let item of actor.initJob">
-            <div class="status clr-col-3">
-              {{ dataService.getOneJob(item.id).name }} Lv {{ item.level }}
-              <br>
-            </div>
-          </ng-container>
-        </div>
-      </div>
-    </div>
-    <div class="clr-row">
-      <div class="status clr-col-2">
-        <b>초기 종족</b>
-      </div>
-      <div class="status clr-col-10" style="margin-top: 0px">
-        <div class="clr-row">
-          <ng-container *ngFor="let item of actor.initRace">
-            <div class="status clr-col-3">
-              {{ dataService.getOneRace(item.id).name }} Lv {{ item.level }}
-              <br>
-            </div>
-          </ng-container>
-        </div>
-      </div>
-    </div>
 
     <div class="clr-row" *ngIf="actor.learningSkills!.length">
       <div class="status clr-col-12">
@@ -144,7 +110,8 @@
           <tbody>
             <tr class="clickable" *ngFor="let item of actor.learningSkills" (click)="viewSkill(item)">
               <td>{{ item.level }}</td>
-              <td class="left" style="padding: 6px"><img src="assets/icons/iconset.png" [ngStyle]="calculateService.calculateStyle(item.skill!.icon)">{{ item.skill!.name }}</td>
+              <td class="left" style="padding: 6px"><img src="assets/icons/iconset.png"
+                  [ngStyle]="calculateService.calculateStyle(item.skill!.icon)">{{ item.skill!.name }}</td>
               <td class="left">{{ skillType[item.skill!.type] }}</td>
               <td class="left cost" *ngIf="this.calculateService.getCost(item.skill!) as cost">
                 <div *ngIf="cost['size'] || cost['size'] === 0">{{ cost['size'] }}</div>
