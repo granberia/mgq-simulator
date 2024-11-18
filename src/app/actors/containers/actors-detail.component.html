@@ -142,7 +142,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let item of actor.learningSkills">
+            <tr class="clickable" *ngFor="let item of actor.learningSkills" (click)="viewSkill(item)">
               <td>{{ item.level }}</td>
               <td class="left" style="padding: 6px"><img src="assets/icons/iconset.png" [ngStyle]="calculateService.calculateStyle(item.skill!.icon)">{{ item.skill!.name }}</td>
               <td class="left">{{ skillType[item.skill!.type] }}</td>

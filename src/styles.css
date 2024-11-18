@@ -45,3 +45,11 @@
 .branding {
   max-width: unset !important;
 }
+
+.clickable {
+  cursor: pointer;
+}
+
+.clickable:hover {
+  background-color: var(--clr-datagrid-row-hover-color, hsl(198, 0%, 91%));
+}

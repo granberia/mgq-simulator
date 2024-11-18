@@ -1,5 +1,117 @@
 <div align="center" *ngIf="race">
   <div style="width: 1080px" align="left">
-    <app-race-view [race]="race"></app-race-view>
+    <div class="clr-row" *ngIf="race">
+      <div class="status clr-col-12">
+        <div class="detail-title">{{ race.name }}</div>
+        <ng-container *ngFor="let item of description[race.id]">
+          {{ item }}
+        </ng-container>
+      </div>
+      <div class="status clr-col-2">
+        <b>최대 HP</b>
+      </div>
+      <div class="status clr-col-2">
+        {{ race.hp }}%
+      </div>
+      <div class="status clr-col-2">
+        <b>최대 MP</b>
+      </div>
+      <div class="status clr-col-2">
+        {{ race.mp }}%
+      </div>
+      <div class="status clr-col-2">
+        <b>최대 SP</b>
+      </div>
+      <div class="status clr-col-2">
+        {{ race.sp }}%
+      </div>
+      <div class="status clr-col-2">
+        <b>공격력</b>
+      </div>
+      <div class="status clr-col-2">
+        {{ race.atk }}%
+      </div>
+      <div class="status clr-col-2">
+        <b>방어력</b>
+      </div>
+      <div class="status clr-col-2">
+        {{ race.def }}%
+      </div>
+      <div class="status clr-col-2">
+        <b>마력</b>
+      </div>
+      <div class="status clr-col-2">
+        {{ race.mat }}%
+      </div>
+      <div class="status clr-col-2">
+        <b>정신력</b>
+      </div>
+      <div class="status clr-col-2">
+        {{ race.mdf }}%
+      </div>
+      <div class="status clr-col-2">
+        <b>민첩성</b>
+      </div>
+      <div class="status clr-col-2">
+        {{ race.agi }}%
+      </div>
+      <div class="status clr-col-2">
+        <b>손재주</b>
+      </div>
+      <div class="status clr-col-2">
+        {{ race.luk }}%
+      </div>
+      <div class="status clr-col-2" *ngIf="race.addSkill">
+        <b>스킬타입 추가</b>
+      </div>
+      <div class="status clr-col-10" *ngIf="race.addSkill">
+        <ng-container *ngFor="let item of race.addSkill let i = index">
+          <ng-container *ngIf="i!==0">/ </ng-container>{{ skillType[item] }}</ng-container>
+      </div>
+      <div class="status clr-col-2" *ngIf="race.addWeapon">
+        <b>무기타입 추가</b>
+      </div>
+      <div class="status clr-col-10" *ngIf="race.addWeapon">
+        <ng-container *ngFor="let item of race.addWeapon let i = index">
+          <ng-container *ngIf="i!==0">/ </ng-container>{{ weaponType[item] }}</ng-container>
+      </div>
+      <div class="status clr-col-2" *ngIf="race.addArmor">
+        <b>방어구타입 추가</b>
+      </div>
+      <div class="status clr-col-10" *ngIf="race.addArmor">
+        <ng-container *ngFor="let item of race.addArmor let i = index">
+          <ng-container *ngIf="i!==0">/ </ng-container>{{ armorType[item] }}</ng-container>
+      </div>
+      <div class="status clr-col-12" *ngIf="race.learningSkills!.length">
+        <b>습득 스킬</b>
+        <table class="table" style="margin-top: 12px">
+          <thead>
+            <tr>
+              <th style="width: 5%">레벨</th>
+              <th style="width: 15%" class="left">이름</th>
+              <th style="width: 10%" class="left">분류</th>
+              <th style="width: 5%" class="left">비용</th>
+              <th style="width: 70%" class="left">효과</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="clickable" *ngFor="let item of race.learningSkills" (click)="viewSkill(item)">
+              <td>{{ item.level }}</td>
+              <td class="left" style="padding: 6px"><img src="assets/icons/iconset.png"
+                  [ngStyle]="calculateService.calculateStyle(item.skill!.icon)">{{ item.skill!.name }}</td>
+              <td class="left">{{ skillType[item.skill!.type] }}</td>
+              <td class="left cost" *ngIf="this.calculateService.getCost(item.skill!) as cost">
+                <div *ngIf="cost['size'] || cost['size'] === 0">{{ cost['size'] }}</div>
+                <div *ngIf="cost['goldCost']" class="gold-cost">{{ cost['goldCost'] }}</div>
+                <div *ngIf="cost['hpCost']" class="hp-cost">{{ cost['hpCost'] }}%</div>
+                <div *ngIf="cost['mpCost']" class="mp-cost">{{ cost['mpCost'] }}</div>
+                <div *ngIf="cost['spCost']" class="sp-cost">{{ cost['spCost'] }}</div>
+              </td>
+              <td class="left">{{ item.skill!.description }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 </div>

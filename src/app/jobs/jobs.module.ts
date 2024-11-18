@@ -4,10 +4,9 @@ import { NgModule } from '@angular/core';
 import { SharedModule } from '../shared/shared.module';
 import { JobsListComponent } from './containers/jobs-list.component';
 import { JobsDetailComponent } from './containers/jobs-detail.component';
-import { JobViewComponent } from './compontnts/job-view.component';
 
 @NgModule({
   imports: [CommonModule, HttpClientModule, SharedModule],
-  declarations: [JobsListComponent, JobsDetailComponent, JobViewComponent],
+  declarations: [JobsListComponent, JobsDetailComponent],
 })
 export class JobsModule { }

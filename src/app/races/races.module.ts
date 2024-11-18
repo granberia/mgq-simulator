@@ -4,10 +4,9 @@ import { NgModule } from '@angular/core';
 import { SharedModule } from '../shared/shared.module';
 import { RacesListComponent } from './containers/races-list.component';
 import { RacesDetailComponent } from './containers/races-detail.component';
-import { RaceViewComponent } from './components/race-view.component';
 
 @NgModule({
   imports: [CommonModule, HttpClientModule, SharedModule],
-  declarations: [RacesListComponent, RacesDetailComponent, RaceViewComponent],
+  declarations: [RacesListComponent, RacesDetailComponent],
 })
 export class RacesModule { }

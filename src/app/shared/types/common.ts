@@ -61,6 +61,7 @@ export type Datatype = 'actor' | 'job' | 'race' | 'weapon' | 'armor' | 'accessor
 
 export interface From {
   type: Datatype;
+  id: string;
   source: string;
   level: number;
 }

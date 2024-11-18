@@ -4,10 +4,9 @@ import { NgModule } from '@angular/core';
 import { SkillsListComponent } from './containers/skills-list.component';
 import { SharedModule } from '../shared/shared.module';
 import { SkillsDetailComponent } from './containers/skills-detail.component';
-import { SkillViewComponent } from './components/skill-view.component';
 
 @NgModule({
   imports: [CommonModule, HttpClientModule, SharedModule],
-  declarations: [SkillsListComponent, SkillsDetailComponent, SkillViewComponent],
+  declarations: [SkillsListComponent, SkillsDetailComponent],
 })
 export class SkillsModule { }

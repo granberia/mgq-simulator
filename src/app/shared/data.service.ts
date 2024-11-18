@@ -210,6 +210,7 @@ export class DataService {
         .map((item: LearningSkill) => {
           const skill = this.registerFrom(item.id, {
             type: 'actor',
+            id: target.id,
             source: target.name,
             level: item.level,
           });
@@ -244,6 +245,7 @@ export class DataService {
         (item: LearningSkill) => {
           const skill = this.registerFrom(item.id, {
             type,
+            id: target.id,
             source: target.name,
             level: item.level,
           });

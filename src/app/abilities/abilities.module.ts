@@ -4,10 +4,9 @@ import { NgModule } from '@angular/core';
 import { AbilitiesListComponent } from './containers/abilities-list.component';
 import { SharedModule } from '../shared/shared.module';
 import { AbilitiesDetailComponent } from './containers/abilities-detail.component';
-import { AbilityViewComponent } from './components/ability-view.component';
 
 @NgModule({
   imports: [CommonModule, HttpClientModule, SharedModule],
-  declarations: [AbilitiesListComponent, AbilitiesDetailComponent, AbilityViewComponent],
+  declarations: [AbilitiesListComponent, AbilitiesDetailComponent],
 })
 export class AbilitiesModule { }

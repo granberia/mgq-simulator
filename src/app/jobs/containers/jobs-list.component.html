@@ -12,10 +12,10 @@
   <clr-dg-column [clrDgSortBy]="jobComparators.agiComparator">민첩성</clr-dg-column>
   <clr-dg-column [clrDgSortBy]="jobComparators.lukComparator">손재주</clr-dg-column>
 
-  <clr-dg-row *clrDgItems="let job of jobList">
-    <clr-dg-cell style="cursor: pointer" (click)="viewDetail(job)">{{ job.name }}</clr-dg-cell>
+  <clr-dg-row class="clickable" *clrDgItems="let job of jobList" (click)="viewDetail(job)">
+    <clr-dg-cell>{{ job.name }}</clr-dg-cell>
     <ng-container *ngFor="let item of columns">
-      <clr-dg-cell style="cursor: pointer" (click)="viewDetail(job)">{{ job[item] }}%</clr-dg-cell>
+      <clr-dg-cell>{{ job[item] }}%</clr-dg-cell>
     </ng-container>
   </clr-dg-row>
 
