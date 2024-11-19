@@ -3,7 +3,7 @@ import { Common } from './common';
 export interface Race extends Common {
   require: string[];
   subrequire?: string[];
-  baseRace?: BaseRace;
+  baseRaces?: BaseRace[];
 }
 
 export const RaceType: { [key: string]: BaseRace } = {

@@ -25,6 +25,7 @@ export class DataService {
   actorRaceCount: { [key: string]: number } = {};
   actorRaceFilter: BaseRace[] = [];
   jobs: Job[] = [];
+  jobCount: { [key: string]: number } = {};
   races: Race[] = [];
   raceCount: { [key: string]: number } = {};
   raceFilter: BaseRace[] = [];
@@ -57,10 +58,14 @@ export class DataService {
       this.raceCount[RaceType[key]] = 0;
     }
     this.races = RACE_LIST.map((race) => {
-      this.getRaceTypes(race).forEach((type) => {
+      const baseRaces = this.getRaceTypes(race);
+      baseRaces.forEach((type) => {
         this.raceCount[type]++;
       });
-      return this.setupDefaultValues(race, 'race');
+      return {
+        ...this.setupDefaultValues(race, 'race'),
+        baseRaces,
+      };
     });
     this.actorRaceCount = {};
     for (let key in RaceType) {
@@ -138,7 +143,7 @@ export class DataService {
       races = races.filter((race) => {
         let flag = false;
         this.raceFilter.forEach((filterRace) => {
-          if (this.getRaceTypes(race).indexOf(filterRace) !== -1) {
+          if (race.baseRaces!.includes(filterRace)) {
             flag = true;
           }
         });
@@ -281,12 +286,16 @@ export class DataService {
     const index = +race.id;
     if (index >= 5000) {
       return [
-        ...race.require,
-        ...(race.subrequire ? race.subrequire : []),
-      ].reduce((prev: BaseRace[], req: string) => {
-        const subrace = RACE_LIST.find((race) => race.id === req);
-        return [...prev, ...(subrace ? this.getRaceTypes(subrace) : [])];
-      }, []);
+        ...new Set(
+          [...race.require, ...(race.subrequire ? race.subrequire : [])].reduce(
+            (prev: BaseRace[], req: string) => {
+              const subrace = RACE_LIST.find((race) => race.id === req);
+              return [...prev, ...(subrace ? this.getRaceTypes(subrace) : [])];
+            },
+            []
+          )
+        ),
+      ];
     }
     if (index >= 151 && index < 158) {
       return ['인간'];
