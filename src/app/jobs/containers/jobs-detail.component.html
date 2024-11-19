@@ -57,13 +57,22 @@
                   <ng-container *ngIf="i!==0"> / </ng-container>{{ armorType[item] }}</ng-container>
               </td>
             </tr>
+            <tr class="clr-row" *ngIf="job.require && job.require.length">
+              <th class="clr-col-2">전직 조건</th>
+              <td class="clr-col-10">
+                <ng-container *ngFor="let item of job.require let i = index">
+                  <ng-container *ngIf="i!==0"> / </ng-container><a *ngIf="dataService.getOneJobOrRace(item) as required"
+                    (click)="viewJobOrRace(required)">{{ required!.name }}</a>
+                </ng-container><ng-container *ngIf="job.require.length"> 마스터</ng-container>
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
 
 
       <div class="status clr-col-12" *ngIf="job.learningSkills!.length">
-        <b>습득 스킬</b>
+        <div class="detail-subtitle">습득 스킬</div>
         <table class="table">
           <thead>
             <tr>

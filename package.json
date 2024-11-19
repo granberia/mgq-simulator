@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
+    "predeploy": "git config --global user.email reptilesax@gmail.com && git config --global user.name granberia",
     "deploy": "git config --global user.email reptilesax@gmail.com && git config --global user.name granberia && git add . && git commit -m 'deploy' && git push",
     "start": "ng serve",
     "build": "ng build",

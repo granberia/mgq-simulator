@@ -9,6 +9,7 @@ import { WeaponType } from '../../shared/types/weapons';
 import { ArmorType } from '../../shared/types/armors';
 import { LearningSkill } from '../../shared/types/common';
 import { CalculateService } from '../../shared/calculate.service';
+import { Job } from '../../shared/types/jobs';
 
 @Component({
   selector: 'app-races-detail',
@@ -41,6 +42,15 @@ export class RacesDetailComponent implements OnInit {
       this.router.navigate([`../../abilities/${skill.id}`], { relativeTo: this.route });
     } else {
       this.router.navigate([`../../skills/${skill.id}`], { relativeTo: this.route });
+    }
+  }
+
+  viewJobOrRace(item: Job | Race) {
+    if ("abilityPoints" in item) {
+      this.router.navigate([`../../jobs/${item.id}`], { relativeTo: this.route });
+    } else {
+      this.router.navigate([`../${item.id}`], { relativeTo: this.route });
+      this.race = this.dataService.getOneRace(item.id);
     }
   }
 }

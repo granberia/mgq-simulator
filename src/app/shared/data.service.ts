@@ -155,6 +155,10 @@ export class DataService {
     return this.races.find((race) => race.id === id)!;
   }
 
+  getOneJobOrRace(id: string) {
+    return [...this.jobs, ...this.races].find((item) => item.id === id);
+  }
+
   getAllWeapons() {
     return {
       total: [],

@@ -54,9 +54,14 @@
   background-color: var(--clr-datagrid-row-hover-color, hsl(198, 0%, 91%));
 }
 
+.detail-subtitle {
+  margin-top: 12px;
+  font-weight: bolder;
+}
+
 .table {
   margin-top: 12px;
-  margin-bottom: 12px;
+  margin-bottom: 0px;
 }
 
 tr.clr-row {
@@ -76,4 +81,10 @@ tr.clr-row {
   border-right-color: #ccc;
   border-right-color: var(--clr-table-border-color, hsl(198, 0%, 80%));
   font-weight: 600;
+}
+
+a {
+  color: #0072a3;
+  color: var(--clr-link-hover-color, hsl(198, 100%, 32%));
+  cursor: pointer;
 }
