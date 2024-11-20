@@ -14,7 +14,7 @@ import { ACCESSORY_LIST } from './database/accessoriesDataBase';
 import { Weapon } from './types/weapons';
 import { Armor } from './types/armors';
 import { Skill, SkillType } from './types/skills';
-import { Job } from './types/jobs';
+import { BaseJob, Job, JobType } from './types/jobs';
 import { Accessory } from './types/accessories';
 import { Ability } from './types/abilities';
 import { Datatype, From, LearningSkill } from './types/common';
@@ -26,6 +26,7 @@ export class DataService {
   actorRaceFilter: BaseRace[] = [];
   jobs: Job[] = [];
   jobCount: { [key: string]: number } = {};
+  jobFilter: BaseJob[] = [];
   races: Race[] = [];
   raceCount: { [key: string]: number } = {};
   raceFilter: BaseRace[] = [];
@@ -53,7 +54,19 @@ export class DataService {
         from: [],
       };
     });
-    this.jobs = JOB_LIST.map((job) => this.setupDefaultValues(job, 'job'));
+    for (let key in JobType) {
+      this.jobCount[JobType[key]] = 0;
+    }
+    this.jobs = JOB_LIST.map((job) => {
+      const baseJobs = this.getJobTypes(job);
+      baseJobs.forEach((type) => {
+        this.jobCount[type]++;
+      });
+      return {
+        ...this.setupDefaultValues(job, 'job'),
+        baseJobs,
+      }
+    });
     for (let key in RaceType) {
       this.raceCount[RaceType[key]] = 0;
     }
@@ -127,9 +140,21 @@ export class DataService {
   }
 
   getAllJobs() {
+    let jobs = this.jobs;
+    if (this.jobFilter.length !== 0) {
+      jobs = jobs.filter((job) => {
+        let flag = false;
+        this.jobFilter.forEach((filterJob) => {
+          if (job.baseJobs!.includes(filterJob)) {
+            flag = true;
+          }
+        });
+        return flag;
+      });
+    }
     return {
-      total: [],
-      jobs: this.jobs,
+      total: this.jobCount,
+      jobs,
     };
   }
 
@@ -370,6 +395,23 @@ export class DataService {
       return ['천사'];
     }
     return [];
+  }
+
+  getJobTypes(job: Job): BaseJob[] {
+    if (JobType[job.id]) {
+      return [JobType[job.id]];
+    }
+    return [
+      ...new Set(
+        [...job.require, ...(job.subrequire ? job.subrequire : [])].reduce(
+          (prev: BaseJob[], req: string) => {
+            const subjob = JOB_LIST.find((job) => job.id === req);
+            return [...prev, ...(subjob ? this.getJobTypes(subjob) : [])];
+          },
+          []
+        )
+      ),
+    ];
   }
 
   getAllSkills() {

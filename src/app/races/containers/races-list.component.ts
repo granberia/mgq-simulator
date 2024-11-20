@@ -29,9 +29,9 @@ export class RacesListComponent implements OnInit {
     for (let key in RaceType) {
       this.baseRaces.push(RaceType[key]);
     }
-    const data = this.dataService.getAllRaces();
-    this.raceList = data.races;
-    this.total = data.total;
+    const { races, total } = this.dataService.getAllRaces();
+    this.raceList = races;
+    this.total = total;
   }
 
   viewDetail(race: Race) {

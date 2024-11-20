@@ -1342,7 +1342,7 @@ def extract_mgq_job(file, i)
     end
     set_data(file, '},')
 
-    if i <= 149 #abilityPoints 계산, if job
+    if i <= 149 || (i >= 6998 && i <= 7100) #abilityPoints 계산, if job
       temp = 'abilityPoints: ['
       cnt = 0
       class_data[i].note.each_line do |line|
@@ -1365,13 +1365,12 @@ def extract_mgq_job(file, i)
 end
 
 #===============================================================================
-def extract_actor_ace_race(file)
-  extract = 'race'
+def extract_actor_ace_class(file, extract)
   class_data = get_class
   if extract == 'job'
     set_data(file, 'import { Job } from "../types/jobs";') #job
     set_data(file, 'export const JOB_LIST: Job[] = [') # job
-    for i in 1...149 # job
+    for i in 1...150 # job
     extract_mgq_job(file, i)
     end
     for i in 6998...7080 # job2
@@ -1436,7 +1435,7 @@ def extract_actor_ace_actor(file)
         actor[i].note.each_line do |line|
           if /<経験済職業\s?((?:\d+\-\d+(?:\,\s?)?)+)>/i.match(line)
             $1.scan(/(\d+)\-(\d+)/){|a, b|
-              if a.to_i < 151
+              if (a.to_i < 151 || (a.to_i >= 6998 && a.to_i <= 7100))
                 if cnt != 0
                   temp = temp + ', '
                 end
@@ -1461,7 +1460,7 @@ def extract_actor_ace_actor(file)
         actor[i].note.each_line do |line|
           if /<経験済職業\s?((?:\d+\-\d+(?:\,\s?)?)+)>/i.match(line)
             $1.scan(/(\d+)\-(\d+)/){|a, b|
-              if a.to_i >= 151 && a.to_i < 400
+              if (a.to_i >= 151 && a.to_i < 400) || a.to_i >= 7200
                 if cnt != 0
                   temp = temp + ', '
                 end
@@ -1755,10 +1754,11 @@ end
 # ● Extract Base Item
 #===============================================================================
 def extract_database
-  # extract = 'actor'
+  extract = 'actor'
   # extract = 'race'
+  # extract = 'job'
   # extract = 'skill'
-  extract = 'ability'
+  # extract = 'ability'
   # extract = 'weapon'
   # extract = 'armor'
   # extract = 'accessory'
@@ -1776,6 +1776,14 @@ def extract_database
 
   if extract == 'skill'
     extract_actor_ace_skill(file, extract)
+  end
+
+  if extract == 'job'
+    extract_actor_ace_class(file, extract)
+  end
+
+  if extract == 'race'
+    extract_actor_ace_class(file, extract)
   end
 
   # extract_actor_ace(file) if $project_version == 1

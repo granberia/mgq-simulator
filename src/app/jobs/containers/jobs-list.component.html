@@ -1,3 +1,11 @@
+<ng-container *ngFor="let item of baseJobs">
+  <span
+    [ngClass]="{'label-info': dataService.jobFilter.length !== 0 && dataService.jobFilter.includes(item), 'label-light-blue': dataService.jobFilter.length !== 0 && dataService.jobFilter.includes(item)}"
+    class="label clickable" style="cursor: pointer" (click)="addFilter(item)">
+    {{ item }}
+    <span class="badge">{{ total[item] }}</span>
+  </span>
+</ng-container>
 <clr-datagrid>
   <clr-dg-column [clrDgSortBy]="jobComparators.nameComparator">직업명
     <clr-dg-string-filter [clrDgStringFilter]="nameFilter"></clr-dg-string-filter>

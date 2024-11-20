@@ -66,6 +66,15 @@
                 </ng-container><ng-container *ngIf="job.require.length"> 마스터</ng-container>
               </td>
             </tr>
+            <tr class="clr-row" *ngIf="job.subrequire && job.subrequire.length">
+              <th class="clr-col-2">전직 조건 (선택)</th>
+              <td class="clr-col-10">
+                <ng-container *ngFor="let item of job.subrequire let i = index">
+                  <ng-container *ngIf="i!==0"> / </ng-container><a *ngIf="dataService.getOneJobOrRace(item) as required"
+                    (click)="viewJobOrRace(required)">{{ required!.name }}</a>
+                </ng-container><ng-container> 중 하나 마스터</ng-container>
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
