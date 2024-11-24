@@ -858,6 +858,35 @@ def extract_actor_ace_equip(file)
   set_data(file, '];')
 end
 
+
+#===============================================================================
+
+def extract_actor_ace_item(file)
+  datas = get_item # item
+  set_data(file, 'import { Item } from "../types/items";')
+  set_data(file, 'export const ITEM_LIST: Item[] = [')
+  for i in 1...datas.size # item
+    target = datas[i]
+
+    if target.name[0] != '/' && target.name != '***더미' &&  target.name != '**더미' &&  target.name != ''
+      set_data(file, '{')
+
+      set_data(file, 'id: \''+ target.id.to_s + '\',', true)
+      set_data(file, 'name: \''+ target.name + '\',', true)
+      dec = datas[i].description
+      dec = '' if dec == nil
+      set_data(file, 'description: \''+ dec.split("\r\n").join(' ') + '\',', true)
+#      set_data(file, 'description: \''+ target.description + '\',', true)
+      set_data(file, 'icon: '+ target.icon_index.to_s + ',', true)
+      set_data(file, 'price: '+ target.price.to_s + ',', true)
+
+      set_data(file, '},')
+
+    end
+  end
+  set_data(file, '];')
+end
+
 def extract_mgq_job(file, i)
   class_data = get_class
 
@@ -1754,7 +1783,8 @@ end
 # ● Extract Base Item
 #===============================================================================
 def extract_database
-  extract = 'actor'
+  extract = 'item'
+  # extract = 'actor'
   # extract = 'race'
   # extract = 'job'
   # extract = 'skill'
@@ -1784,6 +1814,10 @@ def extract_database
 
   if extract == 'race'
     extract_actor_ace_class(file, extract)
+  end
+
+  if extract == 'item'
+    extract_actor_ace_item(file)
   end
 
   # extract_actor_ace(file) if $project_version == 1

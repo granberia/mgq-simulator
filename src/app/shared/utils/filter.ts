@@ -9,6 +9,7 @@ import { Ability, AbilityType } from '../types/abilities';
 import { Weapon, WeaponType } from '../types/weapons';
 import { Armor, ArmorType } from '../types/armors';
 import { Accessory } from '../types/accessories';
+import { Item } from '../types/items';
 
 export class JobNameFilter implements ClrDatagridStringFilterInterface<Job> {
   accepts(a: Job, search: string): boolean {
@@ -146,8 +147,15 @@ export class SpecialStatFilter implements ClrDatagridStringFilterInterface<Weapo
   }
 }
 
+export class NameFilter implements ClrDatagridStringFilterInterface<Weapon | Armor> {
+  accepts(a: Weapon | Armor | Accessory | Item, search: string): boolean {
+    return "" + a.name === search
+      || a.name!.toLowerCase().indexOf(search) >= 0;
+  }
+}
+
 export class DescFilter implements ClrDatagridStringFilterInterface<Weapon | Armor> {
-  accepts(a: Weapon | Armor | Accessory, search: string): boolean {
+  accepts(a: Weapon | Armor | Accessory | Item, search: string): boolean {
     return "" + a.description === search
       || a.description!.toLowerCase().indexOf(search) >= 0;
   }

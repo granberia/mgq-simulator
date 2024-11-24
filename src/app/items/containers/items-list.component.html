@@ -1,0 +1,29 @@
+<clr-datagrid>
+  <clr-dg-column [clrDgSortBy]="itemComparators.nameComparator">이름
+    <clr-dg-string-filter [clrDgStringFilter]="nameFilter"></clr-dg-string-filter>
+  </clr-dg-column>
+  <clr-dg-column>설명
+    <clr-dg-string-filter [clrDgStringFilter]="descFilter"></clr-dg-string-filter>
+  </clr-dg-column>
+  <clr-dg-column>입수처
+  </clr-dg-column>
+
+  <clr-dg-row class="clickable" *clrDgItems="let item of itemList">
+    <clr-dg-cell style="padding: 6px">
+      <img src="assets/icons/iconset.png" [ngStyle]="calculateService.calculateStyle(item.icon)"> {{ item.name }}
+    </clr-dg-cell>
+    <ng-container *ngFor="let column of columns">
+      <clr-dg-cell>{{ item[column] }}</clr-dg-cell>
+    </ng-container>
+    <clr-dg-cell>
+      {{ places[item.id] }}
+    </clr-dg-cell>
+  </clr-dg-row>
+
+  <clr-dg-footer>
+    <clr-dg-pagination #pagination [clrDgPageSize]="20">
+      <clr-dg-page-size [clrPageSizeOptions]="[10, 20, 50, 100]">페이지 크기</clr-dg-page-size>
+      {{pagination.totalItems}}개 아이템 중 {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}번째
+    </clr-dg-pagination>
+  </clr-dg-footer>
+</clr-datagrid>

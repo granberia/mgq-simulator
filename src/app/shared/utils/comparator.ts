@@ -7,6 +7,7 @@ import { Ability, AbilityType } from '../types/abilities';
 import { Weapon, WeaponType } from '../types/weapons';
 import { Armor, ArmorType } from '../types/armors';
 import { Accessory } from '../types/accessories';
+import { Item } from '../types/items';
 
 
 
@@ -496,6 +497,16 @@ export class AccessoryNameComparator implements ClrDatagridComparatorInterface<A
 export const AccessoryComparators = {
   nameComparator: new ArmorNameComparator(),
   specialStatComparator: new SpecialStatComparator(),
+};
+
+export class NameComparator implements ClrDatagridComparatorInterface<Armor> {
+  compare(a: Item, b: Item) {
+    return a.name < b.name ? 1 : -1;
+  }
+}
+
+export const ItemComparators = {
+  nameComparator: new NameComparator(),
 };
 
 export class SkillNameComparator implements ClrDatagridComparatorInterface<Skill> {

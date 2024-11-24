@@ -14,6 +14,7 @@ import { ArmorsListComponent } from './armors/containers/armors-list.component';
 import { AccessoriesListComponent } from './accessories/containers/accessories-list.component';
 import { SkillsDetailComponent } from './skills/containers/skills-detail.component';
 import { AbilitiesDetailComponent } from './abilities/containers/abilities-detail.component';
+import { ItemsListComponent } from './items/containers/items-list.component';
 
 const routes: Routes = [
   {
@@ -34,6 +35,7 @@ const routes: Routes = [
   { path: 'skills/:id', component: SkillsDetailComponent },
   { path: 'abilities', component: AbilitiesListComponent },
   { path: 'abilities/:id', component: AbilitiesDetailComponent },
+  { path: 'items', component: ItemsListComponent },
   { path: '', redirectTo: 'actors', pathMatch: 'full' },
   { path: '**', redirectTo: 'actors' },
 ];

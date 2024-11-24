@@ -14,6 +14,7 @@ import { AbilitiesModule } from './abilities/abilities.module';
 import { WeaponsModule } from './weapons/weapons.module';
 import { ArmorsModule } from './armors/armors.module';
 import { AccessoriesModule } from './accessories/accessories.module';
+import { ItemsModule } from './items/items.module';
 
 @NgModule({
   declarations: [
@@ -33,6 +34,7 @@ import { AccessoriesModule } from './accessories/accessories.module';
     WeaponsModule,
     ArmorsModule,
     AccessoriesModule,
+    ItemsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

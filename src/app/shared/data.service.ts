@@ -18,6 +18,8 @@ import { BaseJob, Job, JobType } from './types/jobs';
 import { Accessory } from './types/accessories';
 import { Ability } from './types/abilities';
 import { Datatype, From, LearningSkill } from './types/common';
+import { Item } from './types/items';
+import { ITEM_LIST } from './database/itemsDataBase';
 
 @Injectable()
 export class DataService {
@@ -40,6 +42,7 @@ export class DataService {
   skillFilter: string[] = [];
   abilities: Ability[] = [];
   abilityFilter: string[] = [];
+  items: Item[] = [];
 
   constructor() {
     this.skills = SKILL_LIST.map((skill) => {
@@ -114,6 +117,7 @@ export class DataService {
         displaySpecialStat: this.setSpecialStats(accessory),
       };
     });
+    this.items = ITEM_LIST;
   }
 
   getAllActors() {
@@ -209,6 +213,17 @@ export class DataService {
 
   getOneArmor(id: string) {
     return this.armors.find((armor) => armor.id === id);
+  }
+
+  getAllItems() {
+    return {
+      total: [],
+      items: this.items,
+    };
+  }
+
+  getOneItem(id: string) {
+    return this.items.find((item) => item.id === id);
   }
 
   getAllAccessories() {
